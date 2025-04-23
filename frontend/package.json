@@ -11,6 +11,7 @@
     "tailwind": "npx tailwindcss -i ./src/input.css -o ./dist/output.css --watch"
   },
   "dependencies": {
+    "@vis.gl/react-google-maps": "^1.5.2",
     "autoprefixer": "^9.8.8",
     "postcss": "^8.5.3",
     "react": "^19.0.0",

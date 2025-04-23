@@ -1,20 +1,24 @@
+// src/pages/Home.jsx
 import React from 'react';
-import Navbar from '../components/Navbar.jsx';
-import HotelCard from '../components/HotelCard.jsx';
-import SearchForm from '../components/SearchForm.jsx';
-import Filters from '../components/Filters.jsx';
-import Map from '../components/Map.jsx';
+import Navbar from '../components/Navbar';
+import Card from '../components/Card';
+import SearchForm from '../components/SearchForm';
+import Map from '../components/map/Map';
 
 export default function Home() {
   return (
-    <div className="home-page">
+    <div className="min-h-screen bg-[#F8F8F8]">
       <Navbar />
-      <div className="main-content">
-        <HotelCard />
-        <div className="right-panel">
+
+      <div className="flex flex-col lg:flex-row gap-6 px-6 py-8 max-w-7xl mx-auto">
+        {/* Partie gauche : HotelCard */}
+        <div className="flex-1">
+          <Card />
+        </div>
+
+        {/* Partie droite : SearchForm + Filters + Bouton + Map */}
+        <div className="flex-1 space-y-6">
           <SearchForm />
-          <Filters />
-          <button className="search-btn">Rechercher</button>
           <Map />
         </div>
       </div>

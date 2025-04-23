@@ -9,6 +9,9 @@ export default {
         blue: {
           main: '#13293d',
         },
+        green: {
+         spotify: "#1ED760",
+        }
       },
     },
   },
