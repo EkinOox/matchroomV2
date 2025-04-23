@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Feature;
 use App\Entity\Room;
+use App\Repository\FeatureRepository;
 use App\Repository\HotelRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -38,7 +40,15 @@ final class RoomApiController extends AbstractController
         $room->setCapacity($data['capacity'] ?? 1);
         $room->setFolderImage($data['image'] ?? '');
         $room->setTradingThreshold($data['trading_threshold'] ?? 0);
-        $room->setDateCreation(new \DateTime());
+
+        if (!empty($data['features']) && is_array($data['features'])) {
+            foreach ($data['features'] as $featureId) {
+                $feature = $em->getRepository(Feature::class)->find($featureId);
+                if ($feature) {
+                    $room->addFeature($feature);
+                }
+            }
+        }
 
         $em->persist($room);
         $em->flush();
@@ -65,7 +75,7 @@ final class RoomApiController extends AbstractController
     }
 
     #[Route('/api/update_room/{id}', name: 'api_update_room', methods: ['PUT'])]
-    public function updateRoom(int $id, Request $request, EntityManagerInterface $em): JsonResponse
+    public function updateRoom(int $id, Request $request, EntityManagerInterface $em, FeatureRepository $featureRepository): JsonResponse
     {
         $room = $em->getRepository(Room::class)->find($id);
 
@@ -85,6 +95,27 @@ final class RoomApiController extends AbstractController
         if (isset($data['capacity'])) $room->setCapacity($data['capacity']);
         if (isset($data['image'])) $room->setFolderImage($data['image']);
 
+        $newFeatureIds = isset($data['features']) ? $data['features'] : [];
+
+        if (!empty($newFeatureIds)) {
+            $currentFeatures = $room->getFeatures();
+        
+            // D'abord, retirer les features qui ne sont plus dans la nouvelle liste
+            foreach ($currentFeatures as $feature) {
+                if (!in_array($feature->getId(), $newFeatureIds)) {
+                    $room->removeFeature($feature);
+                }
+            }
+        
+            // Puis, ajouter les nouvelles features non encore liées
+            foreach ($newFeatureIds as $featureId) {
+                $feature = $featureRepository->find($featureId);
+                if ($feature && !$room->getFeatures()->contains($feature)) {
+                    $room->addFeature($feature);
+                }
+            }
+        }
+        
         $em->flush();
 
         return $this->json(['success' => true, 'message' => 'Room updated']);
