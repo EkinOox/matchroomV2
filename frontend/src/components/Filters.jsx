@@ -1,15 +1,20 @@
+// src/components/Filters.jsx
 import React from 'react';
-import '../assets/css/Filters.css';
 
 const criteria = ['Piscine', 'Restaurant', 'Wifi', 'Climatisation', 'Lit simple', 'Lit double'];
 
 export default function Filters() {
   return (
-    <div className="filters">
-      <h3>Vos critères :</h3>
-      <div className="criteria-list">
+    <div className="bg-white p-4 rounded-xl shadow-md w-full max-w-3xl mx-auto">
+      <h3 className="text-lg font-semibold text-blue-main mb-4">Vos critÃ¨res :</h3>
+      <div className="flex flex-wrap gap-3">
         {criteria.map((crit, idx) => (
-          <button key={idx} className="crit-button">{crit}</button>
+          <button
+            key={idx}
+            className="px-4 py-2 rounded-full border border-blue-main text-blue-main hover:bg-blue-main hover:text-white transition duration-200"
+          >
+            {crit}
+          </button>
         ))}
       </div>
     </div>

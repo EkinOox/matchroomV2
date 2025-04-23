@@ -1,10 +1,9 @@
 import React from 'react';
-import Navbar from '../../components/Navbar';
-import HotelCard from '../../components/HotelCard';
-import SearchForm from '../../components/SearchForm';
-import Filters from '../../components/Filters';
-import Map from '../../components/Map';
-import '../assets/css/Home.css';
+import Navbar from '../components/Navbar.jsx';
+import HotelCard from '../components/HotelCard.jsx';
+import SearchForm from '../components/SearchForm.jsx';
+import Filters from '../components/Filters.jsx';
+import Map from '../components/Map.jsx';
 
 export default function Home() {
   return (
