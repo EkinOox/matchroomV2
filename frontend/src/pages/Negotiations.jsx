@@ -1,3 +1,4 @@
+import Navbar from '../components/Navbar';
 import { useEffect, useState } from 'react';
 import Tabs from '../components/Tabs';
 import HotelCard from '../components/HotelCard';
@@ -14,6 +15,8 @@ const Negotiations = () => {
   }, [status]);
 
   return (
+    <div className="min-h-screen bg-[#F8F8F8]">
+      <Navbar />
     <div className="min-h-screen bg-gray-100 flex justify-center items-start py-12 px-4">
       <div className="w-full max-w-4xl bg-white rounded-2xl shadow-md p-6">
         {/* En-tête */}
@@ -41,6 +44,7 @@ const Negotiations = () => {
           )}
         </div>
       </div>
+    </div>
     </div>
   );
 };
