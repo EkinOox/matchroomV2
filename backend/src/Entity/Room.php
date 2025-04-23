@@ -59,10 +59,14 @@ class Room
     #[ORM\Column(nullable: true)]
     private ?int $tradingThreshold = null;
 
+    #[ORM\Column]
+    private ?\DateTimeImmutable $createdAt = null;
+
     public function __construct()
     {
         $this->negociations = new ArrayCollection();
         $this->features = new ArrayCollection();
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -245,6 +249,18 @@ class Room
     public function setTradingThreshold(?int $tradingThreshold): static
     {
         $this->tradingThreshold = $tradingThreshold;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }
