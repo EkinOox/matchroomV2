@@ -1,0 +1,83 @@
+services:
+  mysql:
+    image: mysql:8
+    container_name: matchroom_mysql
+    restart: unless-stopped
+    ports:
+      - '3306:3306'
+    environment:
+      MYSQL_DATABASE: matchroom
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - backend_network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: matchroom_phpmyadmin
+    restart: unless-stopped
+    environment:
+      PMA_HOST: mysql
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "8080:80"
+    depends_on:
+      - mysql
+    networks:
+      - backend_network
+
+  backend:
+   build: ./backend
+   container_name: matchroom_backend
+   restart: unless-stopped
+   ports:
+     - "8000:8000"
+   volumes:
+     - ./backend:/var/www/html
+   depends_on:
+     - mysql
+   networks:
+     - backend_network
+     - frontend_network
+
+  frontend:
+    build: ./frontend
+    container_name: matchroom_frontend
+    restart: unless-stopped
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - frontend_node_modules:/app/node_modules
+    networks:
+      - frontend_network
+
+  portainer:
+    image: portainer/portainer-ce
+    container_name: portainer
+    ports:
+      - "9000:9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+
+  uptime-kuma:
+    image: louislam/uptime-kuma
+    container_name: uptime-kuma
+    restart: unless-stopped
+    ports:
+      - "3002:3001"
+    volumes:
+      - uptime_kuma_data:/app/data
+
+volumes:
+  mysql_data:
+  portainer_data:
+  uptime_kuma_data:
+  frontend_node_modules:
+
+
+networks:
+  backend_network: # driver: bridge
+  frontend_network:
