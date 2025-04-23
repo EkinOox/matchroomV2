@@ -2,10 +2,10 @@
 
 namespace App\Entity;
 
-use App\Repository\HotelRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\HotelRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 
 #[ORM\Entity(repositoryClass: HotelRepository::class)]
 class Hotel
@@ -14,9 +14,6 @@ class Hotel
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
-
-    #[ORM\Column]
-    private ?int $api = null;
 
     #[ORM\Column(length: 255)]
     private ?string $name = null;
@@ -36,6 +33,15 @@ class Hotel
     #[ORM\OneToMany(targetEntity: Room::class, mappedBy: 'hotel', orphanRemoval: true)]
     private Collection $rooms;
 
+    #[ORM\Column(length: 255)]
+    private ?string $adress = null;
+
+    #[ORM\Column]
+    private ?float $latitude = null;
+
+    #[ORM\Column]
+    private ?float $longitude = null;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
@@ -45,18 +51,6 @@ class Hotel
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getApi(): ?int
-    {
-        return $this->api;
-    }
-
-    public function setApi(int $api): static
-    {
-        $this->api = $api;
-
-        return $this;
     }
 
     public function getName(): ?string
@@ -139,6 +133,42 @@ class Hotel
                 $room->setHotel(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getAdress(): ?string
+    {
+        return $this->adress;
+    }
+
+    public function setAdress(string $adress): static
+    {
+        $this->adress = $adress;
+
+        return $this;
+    }
+
+    public function getLatitude(): ?float
+    {
+        return $this->latitude;
+    }
+
+    public function setLatitude(float $latitude): static
+    {
+        $this->latitude = $latitude;
+
+        return $this;
+    }
+
+    public function getLongitude(): ?float
+    {
+        return $this->longitude;
+    }
+
+    public function setLongitude(float $longitude): static
+    {
+        $this->longitude = $longitude;
 
         return $this;
     }
