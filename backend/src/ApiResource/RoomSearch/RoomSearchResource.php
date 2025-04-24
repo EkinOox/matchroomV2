@@ -33,6 +33,43 @@ use App\Entity\Room;
             openapi: new Model\Operation(
                 tags: ['RoomSearch'],
                 summary: 'Recherche de chambres en fonction des critères spécifiés.',
+                requestBody: new Model\RequestBody(
+                    content: new \ArrayObject([
+                        'application/json' => new Model\MediaType(
+                            schema: new \ArrayObject([
+                                'type' => 'object',
+                                'properties' => [
+                                    'longitude' => [
+                                        'type' => 'number',
+                                        'format' => 'float',
+                                        'example' => 5.371553530547,
+                                        'description' => 'Coordonnée longitude'
+                                    ],
+                                    'latitude' => [
+                                        'type' => 'number',
+                                        'format' => 'float',
+                                        'example' => 43.242165585801,
+                                        'description' => 'Coordonnée latitude'
+                                    ],
+                                    'NbVoyageur' => [
+                                        'type' => 'integer',
+                                        'example' => 2,
+                                        'description' => 'Nombre de voyageurs'
+                                    ],
+                                    'critere' => [
+                                        'type' => 'array',
+                                        'items' => [
+                                            'type' => 'integer'
+                                        ],
+                                        'example' => [41, 44, 51],
+                                        'description' => 'IDs des critères de recherche'
+                                    ]
+                                ],
+                                'required' => ['longitude', 'latitude', 'NbVoyageur', 'critere']
+                            ])
+                        )
+                    ])
+                ),
             )
         ),
     ]

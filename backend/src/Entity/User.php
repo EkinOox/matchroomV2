@@ -49,6 +49,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $lastname = null;
 
     /**
+     * @var Collection<int, Negociation>
+     */
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Negociation::class, orphanRemoval: true)]
+    private Collection $negociations;
+
+    /**
      * @var Collection<int, Badge>
      */
     #[ORM\ManyToMany(targetEntity: Badge::class, inversedBy: 'users')]
@@ -61,6 +67,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __construct()
     {
         $this->badges = new ArrayCollection();
+        $this->negociations = new ArrayCollection();
     }
 
     public function getId(): ?Uuid
@@ -165,6 +172,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getCreatedAt(): ?\DateTime
     {
         return $this->createdAt;
+    }
+
+    /**
+     * @return Collection<int, Negociation>
+     */
+    public function getNegociations(): Collection
+    {
+        return $this->negociations;
+    }
+
+    public function addNegociation(Negociation $negociation): static
+    {
+        if (!$this->negociations->contains($negociation)) {
+            $this->negociations->add($negociation);
+            $negociation->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNegociation(Negociation $negociation): static
+    {
+        if ($this->negociations->removeElement($negociation)) {
+            // orphanRemoval=true fera le travail automatiquement :
+            // Doctrine supprimera la négociation de la base quand elle est retirée de la collection
+        }
+        return $this;
     }
 
     /**
