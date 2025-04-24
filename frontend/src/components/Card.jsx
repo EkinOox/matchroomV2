@@ -7,36 +7,49 @@ const peopleList = [
     imageUrl:
       "https://www.hotelescenter.es/wp-content/blogs.dir/1601/files/home//header-home-mb.jpg",
     price: "150€/nuit",
+    adresse: "2 Rue des Étuves, 13100 Aix-en-Provence",
   },
   {
     name: "Villa Serena",
     imageUrl:
       "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1a/32/5a/76/escale-oceania-aix-en.jpg?w=1200&h=-1&s=1",
     price: "220€/nuit",
+    adresse: "270 Av. Calendal, 13600 La Ciotat",
   },
   {
     name: "Résidence Soleil",
     imageUrl:
       "https://media.istockphoto.com/id/104731717/fr/photo/centre-de-vill%C3%A9giature-de-luxe.jpg?s=612x612&w=0&k=20&c=qn-Ugr3N5J_JBKZttni3vimlfBOd52jWG3FouENXye0=",
     price: "95€/nuit",
+    adresse: "4 rue du château d’eau 11120 Ginestas",
   },
   {
     name: "Le Palais Bleu",
     imageUrl:
       "https://img.freepik.com/photos-gratuite/belle-piscine-exterieure-luxe-dans-hotel-complexe_74190-7433.jpg?semt=ais_hybrid&w=740",
     price: "310€/nuit",
+    adresse: "12 Rue Richebourg, 25000 Besançon",
   },
 ];
 
 export default function Card() {
   const [cards, setCards] = useState(peopleList);
-  const [swipeDirection, setSwipeDirection] = useState(null); // Pour gérer la direction
+  const [swipeDirection, setSwipeDirection] = useState(null);
+  const [isAnimating, setIsAnimating] = useState(false);
 
   const handleSwipe = (direction) => {
-    if (cards.length === 0) return;
+    if (cards.length === 0 || isAnimating) return;
 
-    setSwipeDirection(direction); // on enregistre la direction
-    setCards((prev) => prev.slice(1)); // on enlève la carte du dessus
+    console.log(`Swipe detected: ${direction}`);
+    setSwipeDirection(direction);
+    setIsAnimating(true);
+
+    // Délai pour laisser le temps à l'animation de se faire avant de supprimer
+    setTimeout(() => {
+      setCards((prev) => prev.slice(1));
+      setSwipeDirection(null);
+      setIsAnimating(false);
+    }, 300); // même durée que le `exit.transition.duration`
   };
 
   return (
@@ -57,11 +70,14 @@ export default function Card() {
                   }
                 }}
                 initial={{ scale: 0.95, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
+                animate={{
+                  scale: 1,
+                  opacity: 1,
+                }}
                 exit={{
-                  x: swipeDirection === "left" ? -1000 : 1000,
+                  x: swipeDirection === "left" ? -1000 : swipeDirection === "right" ? 1000 : 0,
                   opacity: 0,
-                  transition: { duration: 0.3 },
+                  transition: { duration: 0.2 },
                 }}
                 className="absolute w-full h-full rounded-2xl shadow-lg overflow-hidden flex flex-col justify-between text-white"
                 style={{
@@ -70,7 +86,7 @@ export default function Card() {
                   backgroundPosition: "center",
                 }}
               >
-                {/* Neumorphism Icon */}
+                {/* Icône */}
                 <div
                   className="absolute top-4 right-4 w-10 h-10 rounded-full font-bold text-md flex items-center justify-center z-10"
                   style={{
@@ -100,7 +116,7 @@ export default function Card() {
                   </button>
                 </div>
 
-                {/* Info footer */}
+                {/* Infos */}
                 <div className="flex flex-col justify-center h-36 relative z-10 p-4 bg-black/60 backdrop-blur-md rounded-t-2xl mt-auto">
                   <h3 className="text-2xl font-semibold text-center">
                     {person.name}
