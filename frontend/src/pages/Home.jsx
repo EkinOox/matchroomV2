@@ -6,7 +6,6 @@ import SearchForm from "../components/SearchForm";
 import Map from "../components/map/Map";
 import { Globe } from "../components/magicui/globe";
 
-
 const geocodeAddress = async (address) => {
   const res = await fetch(
     `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
@@ -85,10 +84,10 @@ export default function Home() {
             />
           ) : (
             <div className="relative w-full h-[85vh] max-w-md mx-auto flex items-center justify-center overflow-hidden">
-             <Globe />
+              <Globe />
               <div className="absolute inset-0 bg-gradient-to-t from-[#F8F8F8] to-transparent opacity-50" />
               <h1 className="text-2xl font-bold text-center text-gray-800 z-20">
-                Explorez le monde avec nous !
+                Matchez avec votre prochaine destination grâce à MatchRoom !
               </h1>
             </div>
           )}
