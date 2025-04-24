@@ -23,6 +23,12 @@ function Navbar() {
         >
           Vos Négociations
         </Link>
+        <Link
+          to="/login"
+          className="text-black hover:text-blue-main transition-colors duration-200"
+        >
+          Login
+        </Link>
       </div>
     </nav>
   )

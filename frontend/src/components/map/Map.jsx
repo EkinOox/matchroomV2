@@ -21,7 +21,7 @@ export default function MapCustom({ origin, destination }) {
     <APIProvider apiKey="AIzaSyCeQmOns_lk-EoLjb3JhoLs3hkrxzNl8dc">
       {origin && destination && (
         <Map
-          style={{ width: "100%", height: "30vh" }}
+          style={{ width: "50vh", height: "25vh", marginTop: "2rem" }}
           defaultCenter={destination}
           {...mapOptions}
         >

@@ -10,18 +10,20 @@ import { Modal, Box } from '@mui/material';
 const iconMap = {
   'Piscine': <PoolIcon />,
   'Restaurant': <RestaurantIcon />,
-  'Wifi': <NetworkWifiIcon />,
+  'Wi-Fi': <NetworkWifiIcon />,
   'Lit simple': <BedIcon />,
   'Climatisation': <HvacIcon />,
   'Lit double': <HotelIcon />,
 };
 
 const RoomModal = ({ isOpen, onClose, data }) => {
+  console.log("RoomModal data:", data);
+
   return (
     <Modal 
       open={isOpen} 
       onClose={onClose} 
-      sx= {{
+      sx={{
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
         backdropFilter: 'blur(5px)',
       }}
@@ -50,10 +52,10 @@ const RoomModal = ({ isOpen, onClose, data }) => {
         <div className="w-1/2 flex flex-col gap-4">
           <p>{data.description}</p>
           <div className="space-y-3">
-            {data.attribute.map((attr, index) => (
+            {data.features.map((feature, index) => (
               <div key={index} className="flex items-center gap-3">
-                {iconMap[attr] || <HotelIcon />}
-                <span className="text-gray-800">{attr}</span>
+                {iconMap[feature.name] || <HotelIcon />} {/* Affichage de l'ic�ne */}
+                <span className="text-gray-800">{feature.name}</span> {/* Affichage du nom */}
               </div>
             ))}
           </div>

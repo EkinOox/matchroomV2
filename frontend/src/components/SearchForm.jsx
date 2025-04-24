@@ -1,13 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Filters from "./Filters";
 
 export default function SearchForm({ onSearch }) {
   const [input, setInput] = useState("");
   const [travelers, setTravelers] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
   const [selectedCriteria, setSelectedCriteria] = useState([]);
   const [error, setError] = useState("");
+  const [result, setResult] = useState(null);
 
   const handleToggleCriterion = (criterion) => {
     setSelectedCriteria((prev) =>
@@ -17,42 +16,87 @@ export default function SearchForm({ onSearch }) {
     );
   };
 
-  const validateDates = () => {
-    const today = new Date().toISOString().split("T")[0]; // Date au format yyyy-mm-dd
-    if (startDate < today) {
-      setError(
-        "La date de début ne peut pas être antérieure à la date actuelle."
-      );
-      return false;
+  // Fonction pour récupérer les coordonnées depuis une adresse (via Google Maps API)
+  const fetchCoordinates = async (address) => {
+    const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
+      address
+    )}&key=AIzaSyCeQmOns_lk-EoLjb3JhoLs3hkrxzNl8dc&format=json&limit=1`;
+
+    const response = await fetch(url);
+    const data = await response.json();
+
+    if (!data.results || data.results.length === 0) {
+      throw new Error("Adresse non trouvée.");
     }
-    if (endDate && startDate >= endDate) {
-      setError("La date de début doit être inférieure à la date de fin.");
-      return false;
-    }
-    setError("");
-    return true;
+
+    const location = data.results[0].geometry.location;
+
+    return {
+      latitude: location.lat,
+      longitude: location.lng,
+    };
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (input.trim() !== "" && validateDates()) {
-      onSearch({
-        address: input,
-        travelers,
-        startDate,
-        endDate,
-        criteria: selectedCriteria,
-      });
+    if (input.trim() !== "" && travelers > 0 && selectedCriteria.length > 0) {
+      try {
+        const token = localStorage.getItem("token");
+        const { latitude, longitude } = await fetchCoordinates(input);
+
+        console.log("Coordonnées récupérées :", result);
+
+        // Requête locale pour obtenir les résultats (optionnel si déjà fait côté parent)
+        const response = await fetch("http://localhost:8000/api/rooms/search", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            longitude: longitude,
+            latitude: latitude,
+            NbVoyageur: parseInt(travelers, 10),
+            critere: selectedCriteria,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Erreur lors de la recherche.");
+        }
+
+        const data = await response.json();
+        setResult(data);
+        setError("");
+
+        onSearch({
+          lat: latitude,
+          lng: longitude,
+          travelers: travelers,
+          criteria: selectedCriteria,
+          result: data.member,
+        });
+      } catch (err) {
+        setError(err.message);
+      }
+    } else {
+      setError("Tous les champs doivent être remplis.");
     }
   };
+
+  useEffect(() => {
+    if (result !== null) {
+      console.log("Résultat mis à jour :", result);
+    }
+  }, [result]);
 
   return (
     <form
       className="w-full max-w-3xl mx-auto p-6 flex flex-col gap-4"
       onSubmit={handleSubmit}
     >
-    <label> Adresse de destination :</label>
+      <label>Adresse de destination :</label>
       <input
         type="text"
         placeholder="Entrez une adresse..."
@@ -61,6 +105,7 @@ export default function SearchForm({ onSearch }) {
         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-main"
         required
       />
+
       <label>Nombre de Voyageurs :</label>
       <input
         type="number"
@@ -70,28 +115,6 @@ export default function SearchForm({ onSearch }) {
         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-main"
         required
       />
-      <div className="flex flex-col sm:flex-row gap-4">
-        <div className="flex flex-col w-full">
-          <label>Date de Début</label>
-          <input
-            type="date"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-main"
-            required
-          />
-        </div>
-        <div className="flex flex-col w-full">
-        <label>Date de Fin</label>
-          <input
-            type="date"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-main"
-            required
-          />
-        </div>
-      </div>
 
       {error && <div className="text-red-600 text-sm mt-2">{error}</div>}
 
@@ -99,6 +122,7 @@ export default function SearchForm({ onSearch }) {
         selectedCriteria={selectedCriteria}
         onToggle={handleToggleCriterion}
       />
+
       <input
         type="submit"
         className="w-full py-3 bg-blue-main text-white font-semibold rounded-lg shadow-md hover:bg-blue-900 transition cursor-pointer"
