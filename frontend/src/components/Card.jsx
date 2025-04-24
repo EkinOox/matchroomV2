@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import RoomModal from "./RoomModal";
 import NegociationModal from "./NegociationModal";
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import CloseIcon from '@mui/icons-material/Close';
 
 const fakeData = {
   imageUrl: "https://www.hotelescenter.es/wp-content/blogs.dir/1601/files/home//header-home-mb.jpg",
@@ -126,22 +128,22 @@ export default function Card({ onSwipe, searchData, geocodeAddress }) {
                 <div className="flex justify-center gap-6 w-full absolute z-20 bottom-[120px]">
                   <button
                     onClick={() => handleSwipe("left")}
-                    className="bg-red-500 hover:bg-red-600 text-white rounded-full w-12 h-12 text-2xl shadow-md"
+                    className="flex ml-auto justify-center items-center bg-red-500 hover:bg-red-600 text-white rounded-full w-12 h-12 text-2xl shadow-md"
                   >
-                    &#10006;
+                    <CloseIcon/>
                   </button>
                   <button
                     onClick={() => {
                       setIsModalNegoOpen(true);
                     }}
-                    className="bg-green-500 hover:bg-green-600 text-white rounded-full w-12 h-12 text-2xl shadow-md"
+                    className="flex mr-auto justify-center items-center bg-green-500 hover:bg-green-600 text-white rounded-full w-12 h-12 text-2xl shadow-md"
                   >
-                    &#10084;
+                    <FavoriteIcon/>
                   </button>
                 </div>
 
                 {/* Infos hôtel */}
-                <div className="flex flex-col justify-center h-36 relative z-10 p-4 bg-black/60 backdrop-blur-md rounded-t-2xl mt-auto">
+                <div className="flex flex-col justify-center h-36 relative z-10 p-4 bg-black/30 backdrop-blur-md rounded-t-2xl mt-auto">
                   <h3 className="text-2xl font-semibold text-center">
                     {hotel.name}
                   </h3>

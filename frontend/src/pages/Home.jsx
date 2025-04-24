@@ -42,7 +42,7 @@ export default function Home() {
       NbVoyageur: parseInt(formData.travelers, 10),
       dateDebut: new Date(formData.startDate).toLocaleDateString("fr-FR"),
       dateFin: new Date(formData.endDate).toLocaleDateString("fr-FR"),
-      critere: formData.criteria, // 💥 récupérés dynamiquement
+      critere: formData.criteria,
     };
 
     console.log("✅ Données JSON prêtes à être envoyées :", fullSearchData);
@@ -59,7 +59,6 @@ export default function Home() {
       });
     }
   }, [searchData]);
-  
 
   useEffect(() => {
     if (selectedHotel?.adresse) {
@@ -76,18 +75,25 @@ export default function Home() {
         <div className="flex-1 z-10 flex items-center justify-center">
           {searchDone ? (
             <Card
-            onSwipe={(hotel) => {
-              setSelectedHotel(hotel);
-            }}
+              onSwipe={(hotel) => {
+                setSelectedHotel(hotel);
+              }}
               searchData={searchData}
               geocodeAddress={geocodeAddress}
             />
           ) : (
-            <img
-              src="https://app-staging.matchroom.io/images/search_header_banner.png"
-              alt="Voyagez avec nous"
-              className="rounded-xl shadow-md w-full max-w-[40rem]"
-            />
+            <div class="w-full md:min-h-full">
+              <div class="relative">
+                <span class="text-banner-title text-zinc-800 absolute !text-white px-4 md:px-10 top-24 md:text-6xl md:leading-[96px] font-outfit">
+                  Matchez avec votre prochaine destination
+                </span>
+              </div>
+              <img
+                class="rounded-lg w-full md:h-full md:object-cover"
+                src="https://app-staging.matchroom.io/images/search_header_banner.png"
+                alt="the presented room"
+              />
+            </div>
           )}
         </div>
 
