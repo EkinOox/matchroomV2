@@ -6,8 +6,10 @@ use App\Entity\Feature;
 use App\Entity\Room;
 use App\Repository\FeatureRepository;
 use App\Repository\HotelRepository;
+use App\Repository\RoomRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -99,14 +101,14 @@ final class RoomApiController extends AbstractController
 
         if (!empty($newFeatureIds)) {
             $currentFeatures = $room->getFeatures();
-        
+
             // D'abord, retirer les features qui ne sont plus dans la nouvelle liste
             foreach ($currentFeatures as $feature) {
                 if (!in_array($feature->getId(), $newFeatureIds)) {
                     $room->removeFeature($feature);
                 }
             }
-        
+
             // Puis, ajouter les nouvelles features non encore liées
             foreach ($newFeatureIds as $featureId) {
                 $feature = $featureRepository->find($featureId);
@@ -115,10 +117,55 @@ final class RoomApiController extends AbstractController
                 }
             }
         }
-        
+
         $em->flush();
 
         return $this->json(['success' => true, 'message' => 'Room updated']);
     }
 
+    #[Route('/api/list_rooms', name: 'api_my_rooms', methods: ['GET'])]
+    public function getMyRooms(Security $security, RoomRepository $roomRepository): JsonResponse
+    {
+        /** @var User $user */
+        $user = $security->getUser();
+
+        if (!$user || !in_array('ROLE_HOTELIER', $user->getRoles())) {
+            return $this->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $hotel = $user->getHotel();
+
+        if (!$hotel) {
+            return $this->json(['error' => 'No hotel associated to user'], 404);
+        }
+
+        $rooms = $roomRepository->findBy(['hotel' => $hotel]);
+
+        $roomArray = [];
+
+        foreach ($rooms as $room) {
+            $features = [];
+            foreach ($room->getFeatures() as $feature) {
+                $features[] = [
+                    'id' => $feature->getId(),
+                    'name' => $feature->getName(),
+                ];
+            }
+
+            $roomArray[] = [
+                'id' => $room->getId(),
+                'name' => $room->getName(),
+                'description' => $room->getDescription(),
+                'price' => $room->getPrice(),
+                'capacity' => $room->getCapacity(),
+                'image' => $room->getFolderImage(),
+                'acceptance_threshold' => $room->getAcceptanceThreshold(),
+                'refusal_threshold' => $room->getRefusalThreshold(),
+                'trading_threshold' => $room->getTradingThreshold(),
+                'features' => $features,
+            ];
+        }
+
+        return $this->json($roomArray);
+    }
 }
