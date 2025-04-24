@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Modal, Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import confetti from "canvas-confetti";
+
 
 const NegociationModal = ({ isOpen, onClose, data }) => {
   const [offer, setOffer] = useState(null);
@@ -14,8 +16,19 @@ const NegociationModal = ({ isOpen, onClose, data }) => {
     }
 
     console.log("Offre soumise :", offer);
-    navigate("/negociations");
+    const canvas = document.getElementById('confetti-canvas');
+    const myConfetti = confetti.create(canvas, {
+      resize: true,
+      useWorker: true,
+    });
+
+    myConfetti({
+      particleCount: 150,
+      spread: 170,
+      origin: { y: 0.6 },
+    });
   }
+
   return (
     <Modal
       open={isOpen}
@@ -26,11 +39,11 @@ const NegociationModal = ({ isOpen, onClose, data }) => {
       }}
     >
       <Box
-        className="absolute top-1/2 left-1/2 bg-white rounded-lg shadow-xl flex p-6 gap-6"
+        className="absolute top-1/2 left-1/2 bg-white rounded-lg shadow-xl flex p-6 gap-6 flex-col md:flex-row "
         style={{
           transform: "translate(-50%, -50%)",
           width: "50%",
-          maxHeight: "50%",
+          height: "50vh",
           overflowY: "auto",
         }}
       >
@@ -60,7 +73,7 @@ const NegociationModal = ({ isOpen, onClose, data }) => {
           <div className="flex flex-row gap-4">
             <button
               onClick={onClose}
-              className="w-4/12 py-3 bg-blue-main text-white font-semibold rounded-lg shadow-md hover:bg-blue-900 transition"
+              className="w-full py-3 bg-blue-main text-white font-semibold rounded-lg shadow-md hover:bg-blue-900 transition"
             >
               Annuler
             </button>
