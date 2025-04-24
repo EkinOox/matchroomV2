@@ -2,12 +2,14 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Home from './pages/Home'
 import Negotiations from './pages/Negotiations'
 import AdminPanel from './pages/AdminPanel';
+import Accueil from './pages/Accueil';
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Accueil />} />
+        <Route path="/match" element={<Home />} />
         <Route path="/negociations" element={<Negotiations />} />
         <Route path="/admin" element={<AdminPanel />} />
       </Routes>
