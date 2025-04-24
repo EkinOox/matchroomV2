@@ -39,7 +39,7 @@ const NegociationModal = ({ isOpen, onClose, data }) => {
       }}
     >
       <Box
-        className="absolute top-1/2 left-1/2 bg-white rounded-lg shadow-xl flex p-6 gap-6 flex-col md:flex-row "
+        className="absolute top-1/2 left-1/2 bg-white rounded-lg shadow-xl flex p-6 gap-6 flex-col md:flex-row"
         style={{
           transform: "translate(-50%, -50%)",
           width: "50%",
@@ -47,7 +47,7 @@ const NegociationModal = ({ isOpen, onClose, data }) => {
           overflowY: "auto",
         }}
       >
-        <div className="relative w-1/2 rounded-xl overflow-hidden">
+        <div className="relative w-full md:w-1/2 rounded-xl overflow-hidden">
           <img
             src={data.imageUrl}
             alt={data.name}
@@ -59,14 +59,14 @@ const NegociationModal = ({ isOpen, onClose, data }) => {
           </div>
         </div>
 
-        <div className="w-1/2 flex flex-col justify-center gap-4">
+        <div className="w-full md:w-1/2 flex flex-col justify-center gap-4">
           <input
             type="number"
             onChange={(e) => setOffer(e.target.value)}
             style={{
               boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
             }}
-            placeholder="Entrez votre proposition de prix..."
+            placeholder="Entrez votre offre..."
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-main"
             required
           />
