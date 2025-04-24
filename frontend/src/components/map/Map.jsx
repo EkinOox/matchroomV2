@@ -1,11 +1,46 @@
-// src/components/Map.jsx
-import React from 'react';
-import MapCustom from './MapCustom';
+// Map.jsx
+import {APIProvider, Map, Marker} from '@vis.gl/react-google-maps';
+import {RoutesApi} from './route-api';
+import Route from './Route';
 
-export default function Map() {
+const apiClient = new RoutesApi('AIzaSyCeQmOns_lk-EoLjb3JhoLs3hkrxzNl8dc');
+
+const mapOptions = {
+  mapId: '87e65626f9acac8c',
+  defaultZoom: 10,
+  gestureHandling: 'greedy',
+  disableDefaultUI: true,
+};
+
+export default function MapCustom({ origin, destination }) {
   return (
-    <div className="w-full max-w-3xl mx-auto p-4 relative z-1">
-      <MapCustom/>
-    </div>
+    <APIProvider apiKey="AIzaSyCeQmOns_lk-EoLjb3JhoLs3hkrxzNl8dc">
+      {origin && destination && (
+        <Map
+          style={{ width: '100%', height: '30vh' }}
+          defaultCenter={destination}
+          {...mapOptions}
+        >
+          <Marker position={origin} />
+          <Marker position={destination} />
+          <Route
+            apiClient={apiClient}
+            origin={origin}
+            destination={destination}
+            routeOptions={{
+              travelMode: 'TRANSIT',
+              computeAlternativeRoutes: false,
+              units: 'METRIC',
+            }}
+            appearance={{
+              walkingPolylineColor: '#000',
+              defaultPolylineColor: '#7c7c7c',
+              stepMarkerFillColor: '#333333',
+              stepMarkerBorderColor: '#000000',
+            }}
+          />
+        </Map>
+      )}
+    </APIProvider>
   );
 }
