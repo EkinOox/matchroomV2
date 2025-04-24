@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import RoomModal from "./RoomModal";
+import NegociationModal from "./NegociationModal";
 
 const fakeData = {
   imageUrl: "https://www.hotelescenter.es/wp-content/blogs.dir/1601/files/home//header-home-mb.jpg",
@@ -43,6 +44,7 @@ export default function Card({ onSwipe, searchData, geocodeAddress }) {
   const [swipeDirection, setSwipeDirection] = useState(null);
   const [isAnimating, setIsAnimating] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalNegoOpen, setIsModalNegoOpen] = useState(false);
 
   useEffect(() => {
     if (cards.length > 0 && onSwipe) {
@@ -82,7 +84,7 @@ export default function Card({ onSwipe, searchData, geocodeAddress }) {
                 dragConstraints={{ left: 0, right: 0 }}
                 onDragEnd={(e, info) => {
                   if (info.offset.x > 100) {
-                    handleSwipe("right");
+                    setIsModalNegoOpen(true);
                   } else if (info.offset.x < -100) {
                     handleSwipe("left");
                   }
@@ -113,6 +115,12 @@ export default function Card({ onSwipe, searchData, geocodeAddress }) {
                   onClose={() => setIsModalOpen(false)}
                   data={fakeData}
                 />
+                
+                <NegociationModal
+                  isOpen={isModalNegoOpen}
+                  onClose={() => setIsModalNegoOpen(false)}
+                  data={fakeData}
+                />
 
                 {/* Boutons swipe */}
                 <div className="flex justify-center gap-6 w-full absolute z-20 bottom-[120px]">
@@ -123,7 +131,9 @@ export default function Card({ onSwipe, searchData, geocodeAddress }) {
                     &#10006;
                   </button>
                   <button
-                    onClick={() => handleSwipe("right")}
+                    onClick={() => {
+                      setIsModalNegoOpen(true);
+                    }}
                     className="bg-green-500 hover:bg-green-600 text-white rounded-full w-12 h-12 text-2xl shadow-md"
                   >
                     &#10084;

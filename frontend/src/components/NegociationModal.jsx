@@ -55,7 +55,7 @@ const NegociationModal = ({ isOpen, onClose, data }) => {
             </button>
             <input
               type="submit"
-              className="w-full py-3 bg-blue-main text-white font-semibold rounded-lg shadow-md hover:bg-blue-900 transition"
+              className="w-full py-3 bg-blue-main text-white font-semibold rounded-lg shadow-md hover:bg-blue-900 transition cursor-pointer"
               value="Envoyer"
             />
           </div>
