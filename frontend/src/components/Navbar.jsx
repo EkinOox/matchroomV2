@@ -12,7 +12,7 @@ function Navbar() {
           Accueil
         </Link>
         <Link
-          to="/matches"
+          to="/match"
           className="text-black hover:text-blue-main transition-colors duration-200"
         >
           Matches

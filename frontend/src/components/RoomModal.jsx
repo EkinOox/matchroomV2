@@ -18,7 +18,14 @@ const iconMap = {
 
 const RoomModal = ({ isOpen, onClose, data }) => {
   return (
-    <Modal open={isOpen} onClose={onClose}>
+    <Modal 
+      open={isOpen} 
+      onClose={onClose} 
+      sx= {{
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        backdropFilter: 'blur(5px)',
+      }}
+    >
       <Box
         className="absolute top-1/2 left-1/2 bg-white rounded-lg shadow-xl flex p-6 gap-6"
         style={{

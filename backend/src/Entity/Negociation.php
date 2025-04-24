@@ -6,6 +6,10 @@ use App\Repository\NegociationRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: NegociationRepository::class)]
+#[ORM\UniqueConstraint(
+    name: "unique_negociation_per_user_room",
+    columns: ["user_id", "room_id"]
+)]
 class Negociation
 {
     #[ORM\Id]
@@ -13,7 +17,11 @@ class Negociation
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\OneToOne(inversedBy: 'negociation', cascade: ['persist', 'remove'])]
+    // #[ORM\OneToOne(inversedBy: 'negociation', cascade: ['persist', 'remove'])]
+    // #[ORM\JoinColumn(nullable: false)]
+    // private ?User $user = null;
+
+    #[ORM\ManyToOne(inversedBy: 'negociations', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
@@ -28,13 +36,18 @@ class Negociation
     private ?\DateTimeImmutable $responseTime = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $Status = null;
+    private ?string $status = null;
 
     #[ORM\Column(nullable: true)]
     private ?float $counterOffer = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
+
+    public function __construct()
+    {
+        $this->createdAt = new \DateTimeImmutable();
+    }
 
     public function getId(): ?int
     {
@@ -91,12 +104,12 @@ class Negociation
 
     public function getStatus(): ?string
     {
-        return $this->Status;
+        return $this->status;
     }
 
-    public function setStatus(string $Status): static
+    public function setStatus(string $status): static
     {
-        $this->Status = $Status;
+        $this->status = $status;
 
         return $this;
     }

@@ -1,0 +1,28 @@
+# services:
+#   database:
+#     image: mysql:latest
+#     container_name: bdd-hackathon
+#     environment:
+#       MYSQL_DATABASE: bdd_hackathon
+#       MYSQL_USER: user
+#       MYSQL_PASSWORD: root
+#       MYSQL_ROOT_PASSWORD: root
+#     ports:
+#       - '3307:3306'
+#     volumes:
+#       - database_hackathon:/var/lib/mysql
+
+#   phpmyadmin:
+#     image: phpmyadmin/phpmyadmin:latest
+#     container_name: phpmyadmin-hackathon
+#     ports:
+#       - "8081:80"
+#     environment:
+#       PMA_HOST: database
+#       MYSQL_ROOT_PASSWORD: root
+#       MYSQL_PASSWORD: root
+
+# volumes:
+#   database_hackathon:
+
+

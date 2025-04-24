@@ -1,0 +1,53 @@
+api_platform:
+  title: "API MatchRoom"
+  version: 1.0.0
+  description: |
+    <h2>Bienvenue dans l'API de MatchRoom</h2>
+    <h3>Identifiants pour les tests</h3>
+    <p>Pour tester l'API, utilisez les identifiants suivants :</p>
+    <p>USER</p>
+    <ul>
+      <li><strong>Email</strong>: user@user.com</li>
+      <li><strong>Mot de passe de l'utilisateur classique</strong>: password</li>
+    </ul>
+
+    <h3>Authentification via JWT</h3>
+    <p>Pour toutes les requêtes nécessitant une authentification, un <strong>Token JWT</strong> est requis dans l'en-tête <code>Authorization</code> :</p>
+
+    <h4>Utilisation dans l'interface API Platform</h4>
+    <p>Dans l'interface de cette documentation, connectez-vous avec les identifiants ci-dessus, copiez le token JWT obtenu et collez-le dans le champ <strong>Authorize</strong> ci-dessous.</p>
+
+    <h4>Utilisation dans Postman, Insomnia, ou le frontend</h4>
+    <p>Dans les clients comme Postman ou Insomnia, ajoutez le token JWT dans l'en-tête de chaque requête comme suit :</p>
+    <pre>
+      Authorization: Bearer &lt;votre_token_jwt&gt;
+      Content-Type: application/json
+    </pre>
+    <p>Assurez-vous que l'en-tête <code>Content-Type</code> est défini sur <code>application/json</code> pour toutes les requêtes nécessitant un corps de message (POST, PATCH, etc.).</p>
+
+    <h4>Décryptage et vérification du contenu du JWT</h4>
+    <p>Pour vérifier le contenu de votre JWT, y compris pour obtenir l'ID utilisateur, vous pouvez utiliser l'outil en ligne <a href="https://jwt.io/">jwt.io</a>. Collez votre token dans l'interface de jwt.io pour voir les informations encodées.</p>
+
+    <p><em>Note : Les utilisateurs doivent être authentifiés pour accéder à leurs données personnelles.</em></p>
+
+  formats:
+    jsonld: ["application/ld+json"] # Activer JSON-LD => permet de récupérer des données comme la pagination
+    json: ["application/json"] # Garder JSON simple si nécessaire
+  patch_formats:
+    json: ["application/merge-patch+json"]
+
+  defaults:
+    pagination_enabled: true
+    pagination_items_per_page: 10 # Nombre d'éléments par page par défaut
+    pagination_client_enabled: true # Permet au client de modifier la pagination via des paramètres
+    pagination_client_items_per_page: true # Permet au client de choisir le nombre d'éléments
+    pagination_maximum_items_per_page: 20 # Évite que l'utilisateur ne demande trop d'éléments
+    stateless: true
+    cache_headers:
+      vary: ["Content-Type", "Authorization", "Origin"]
+
+  swagger:
+    api_keys:
+      JWT:
+        name: Authorization
+        type: header
