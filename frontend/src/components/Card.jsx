@@ -1,5 +1,14 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import RoomModal from "./RoomModal";
+ 
+let fakeData = {
+  imageUrl : "https://www.hotelescenter.es/wp-content/blogs.dir/1601/files/home//header-home-mb.jpg",
+  name : "Hotel Aquabella",
+  price : 290,
+  description : "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+  attribute : ['Piscine', 'Lit simple', 'Wifi', 'Climatisation', 'Restaurant']
+}
 
 const peopleList = [
   {
@@ -36,6 +45,7 @@ export default function Card() {
   const [cards, setCards] = useState(peopleList);
   const [swipeDirection, setSwipeDirection] = useState(null);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleSwipe = (direction) => {
     if (cards.length === 0 || isAnimating) return;
@@ -88,17 +98,18 @@ export default function Card() {
               >
                 {/* Icône */}
                 <div
-                  className="absolute top-4 right-4 w-10 h-10 rounded-full font-bold text-md flex items-center justify-center z-10"
+                  className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white font-bold text-md flex items-center justify-center z-10 cursor-pointer hover:bg-blue-main"
                   style={{
                     color: "transparent",
-                    background: "#fff",
                     boxShadow:
                       "4px 4px 10px #00000066, -4px -4px 10px #ffffff66",
                     WebkitTextStroke: "1px #aaa",
                   }}
+                  onClick={() => setIsModalOpen(true)}
                 >
                   i
                 </div>
+                <RoomModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} data={fakeData}/> 
 
                 {/* Boutons swipe */}
                 <div className="flex justify-center gap-6 w-full absolute z-20 bottom-[120px]">
