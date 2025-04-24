@@ -13,7 +13,6 @@ const geocodeAddress = async (address) => {
   );
   const data = await res.json();
   if (data.status === "OK") {
-    console.log("Géocodage réussi :", data.results[0].geometry.location);
     return data.results[0].geometry.location;
   } else {
     console.error("Erreur de géocodage :", data.status);
@@ -28,16 +27,39 @@ export default function Home() {
   const [hotelCoords, setHotelCoords] = useState(null);
   const [searchDone, setSearchDone] = useState(false);
 
-  const handleSearch = (formData) => {
-    setSearchData(formData);
+  const handleSearch = async (formData) => {
+    const coords = await geocodeAddress(formData.address);
+
+    if (!coords) {
+      console.error("Impossible de récupérer les coordonnées GPS");
+      return;
+    }
+
+    const fullSearchData = {
+      address: formData.address,
+      longitude: coords.lng.toString(),
+      latitude: coords.lat.toString(),
+      NbVoyageur: parseInt(formData.travelers, 10),
+      dateDebut: new Date(formData.startDate).toLocaleDateString("fr-FR"),
+      dateFin: new Date(formData.endDate).toLocaleDateString("fr-FR"),
+      critere: formData.criteria, // 💥 récupérés dynamiquement
+    };
+
+    console.log("✅ Données JSON prêtes à être envoyées :", fullSearchData);
+
+    setSearchData(fullSearchData);
     setSearchDone(true);
   };
 
   useEffect(() => {
     if (searchData?.address) {
-      geocodeAddress(searchData.address).then(setUserCoords);
+      geocodeAddress(searchData.address).then((coords) => {
+        console.log("✅ Coordonnées utilisateur :", coords);
+        setUserCoords(coords);
+      });
     }
   }, [searchData]);
+  
 
   useEffect(() => {
     if (selectedHotel?.adresse) {
@@ -53,7 +75,13 @@ export default function Home() {
         {/* Partie gauche : soit image de base, soit cartes à swiper */}
         <div className="flex-1 z-10 flex items-center justify-center">
           {searchDone ? (
-            <Card onSwipe={setSelectedHotel} searchData={searchData} geocodeAddress={geocodeAddress}/>
+            <Card
+            onSwipe={(hotel) => {
+              setSelectedHotel(hotel);
+            }}
+              searchData={searchData}
+              geocodeAddress={geocodeAddress}
+            />
           ) : (
             <img
               src="https://app-staging.matchroom.io/images/search_header_banner.png"

@@ -1,4 +1,3 @@
-// src/components/SearchForm.jsx
 import React, { useState } from "react";
 import Filters from "./Filters";
 
@@ -7,6 +6,15 @@ export default function SearchForm({ onSearch }) {
   const [travelers, setTravelers] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [selectedCriteria, setSelectedCriteria] = useState([]);
+
+  const handleToggleCriterion = (criterion) => {
+    setSelectedCriteria((prev) =>
+      prev.includes(criterion)
+        ? prev.filter((c) => c !== criterion)
+        : [...prev, criterion]
+    );
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -16,12 +24,9 @@ export default function SearchForm({ onSearch }) {
         travelers,
         startDate,
         endDate,
+        criteria: selectedCriteria,
       });
     }
-  };
-
-  const inputShadow = {
-    boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
   };
 
   return (
@@ -35,7 +40,6 @@ export default function SearchForm({ onSearch }) {
         value={input}
         onChange={(e) => setInput(e.target.value)}
         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-main"
-        style={inputShadow}
         required
       />
       <input
@@ -44,7 +48,6 @@ export default function SearchForm({ onSearch }) {
         value={travelers}
         onChange={(e) => setTravelers(e.target.value)}
         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-main"
-        style={inputShadow}
         required
       />
       <div className="flex flex-col sm:flex-row gap-4">
@@ -53,7 +56,6 @@ export default function SearchForm({ onSearch }) {
           value={startDate}
           onChange={(e) => setStartDate(e.target.value)}
           className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-main"
-          style={inputShadow}
           required
         />
         <input
@@ -61,14 +63,13 @@ export default function SearchForm({ onSearch }) {
           value={endDate}
           onChange={(e) => setEndDate(e.target.value)}
           className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-main"
-          style={inputShadow}
           required
         />
       </div>
-      <Filters />
+      <Filters selectedCriteria={selectedCriteria} onToggle={handleToggleCriterion} />
       <input
         type="submit"
-        className="w-full py-3 bg-blue-main text-white font-semibold rounded-lg shadow-md hover:bg-blue-900 transition"
+        className="w-full py-3 bg-blue-main text-white font-semibold rounded-lg shadow-md hover:bg-blue-900 transition cursor-pointer"
         value="Rechercher"
       />
     </form>

@@ -87,8 +87,6 @@ const Route = (props) => {
 
   return (
     <>
-      <AdvancedMarker position={origin} />
-      <AdvancedMarker position={destination} />
       {polylines}
       {stepMarkers}
     </>
