@@ -1,0 +1,14 @@
+framework:
+  rate_limiter:
+    login_throttling:
+      policy: "fixed_window"
+      limit: 5 # Nombre maximum de demandes
+      interval: "60 minutes" # Période de temps
+    email_confirmation_limiter:
+      policy: "fixed_window"
+      limit: 3
+      interval: "60 minutes"
+    password_reset_limiter:
+      policy: "fixed_window"
+      limit: 3
+      interval: "60 minutes"

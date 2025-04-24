@@ -2,11 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\RoomRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\RoomRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 
 #[ORM\Entity(repositoryClass: RoomRepository::class)]
 class Room
@@ -35,8 +35,8 @@ class Room
     #[ORM\Column]
     private ?int $capacity = null;
 
-    #[ORM\OneToOne(mappedBy: 'room', cascade: ['persist', 'remove'])]
-    private ?Reservation $reservation = null;
+    // #[ORM\OneToOne(mappedBy: 'room', cascade: ['persist', 'remove'])]
+    // private ?Reservation $reservation = null;
 
     /**
      * @var Collection<int, Negociation>
@@ -56,8 +56,8 @@ class Room
     #[ORM\Column(nullable: true)]
     private ?int $refusalThreshold = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $tradingThreshold = null;
+    // #[ORM\Column(nullable: true)]
+    // private ?int $tradingThreshold = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
@@ -146,22 +146,22 @@ class Room
         return $this;
     }
 
-    public function getReservation(): ?Reservation
-    {
-        return $this->reservation;
-    }
+    // public function getReservation(): ?Reservation
+    // {
+    //     return $this->reservation;
+    // }
 
-    public function setReservation(Reservation $reservation): static
-    {
-        // set the owning side of the relation if necessary
-        if ($reservation->getRoom() !== $this) {
-            $reservation->setRoom($this);
-        }
+    // public function setReservation(Reservation $reservation): static
+    // {
+    //     // set the owning side of the relation if necessary
+    //     if ($reservation->getRoom() !== $this) {
+    //         $reservation->setRoom($this);
+    //     }
 
-        $this->reservation = $reservation;
+    //     $this->reservation = $reservation;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
     /**
      * @return Collection<int, Negociation>
@@ -241,17 +241,17 @@ class Room
         return $this;
     }
 
-    public function getTradingThreshold(): ?int
-    {
-        return $this->tradingThreshold;
-    }
+    // public function getTradingThreshold(): ?int
+    // {
+    //     return $this->tradingThreshold;
+    // }
 
-    public function setTradingThreshold(?int $tradingThreshold): static
-    {
-        $this->tradingThreshold = $tradingThreshold;
+    // public function setTradingThreshold(?int $tradingThreshold): static
+    // {
+    //     $this->tradingThreshold = $tradingThreshold;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
     public function getCreatedAt(): ?\DateTimeImmutable
     {
