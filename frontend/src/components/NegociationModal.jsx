@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Modal, Box } from '@mui/material';
 
 const NegociationModal = ({ isOpen, onClose, data }) => {
+  const [offer, setOffer] = useState(null);
+
   return (
     <Modal 
       open={isOpen} 
@@ -35,6 +37,7 @@ const NegociationModal = ({ isOpen, onClose, data }) => {
         <div className="w-1/2 flex flex-col justify-center gap-4">
           <input
             type="number"
+            onChange={(e) => setOffer(e.target.value)}
             style={{
               boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
             }}
