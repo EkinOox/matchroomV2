@@ -46,6 +46,7 @@ class Hotel
     {
         $this->users = new ArrayCollection();
         $this->rooms = new ArrayCollection();
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
