@@ -1,43 +1,81 @@
 security:
-    # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
-    password_hashers:
-        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
-    # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
-    providers:
-        # used to reload user from session & other features (e.g. switch_user)
-        app_user_provider:
-            entity:
-                class: App\Entity\User
-                property: email
-    firewalls:
-        dev:
-            pattern: ^/(_(profiler|wdt)|css|images|js)/
-            security: false
-        main:
-            lazy: true
-            provider: app_user_provider
+  # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
+  password_hashers:
+    Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: "auto"
+  # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
+  providers:
+    # used to reload user from session & other features (e.g. switch_user)
+    app_user_provider:
+      entity:
+        class: App\Entity\User
+        property: email
+    # used to reload user from session & other features (e.g. switch_user)
+  firewalls:
+    dev:
+      pattern: ^/(_(profiler|wdt)|css|images|js)/
+      security: false
+    login:
+      pattern: ^/api/login
+      stateless: true
+      lazy: true
+      provider: app_user_provider
+      custom_authenticator:
+        - App\Security\ApiAuthenticator
+      json_login:
+        check_path: /api/login # La route pour la connexion
+        username_path: email # L'email est utilisé comme identifiant
+        password_path: password
+        success_handler: lexik_jwt_authentication.handler.authentication_success
+        failure_handler: lexik_jwt_authentication.handler.authentication_failure
+    api:
+      pattern: ^/api
+      stateless: true
+      provider: app_user_provider
+      entry_point: jwt
+      jwt: ~ # Utilisation du JWT comme méthode d'authentification
+      refresh_jwt:
+        check_path: /api/token/refresh
 
-            # activate different ways to authenticate
-            # https://symfony.com/doc/current/security.html#the-firewall
+  # Remarque : Seul le *premier* contrôle d'accès qui correspondra sera utilisé
+  access_control:
+    # <----- Accès public (sans authentification) -----> #
+    - {
+        path: ^/api/(login|token/refresh),
+        roles: PUBLIC_ACCESS,
+        methods: [POST],
+      } # Login et rafraîchissement du token
+    - {
+        path: ^/api/request-new-confirmation-email,
+        roles: PUBLIC_ACCESS,
+        methods: [POST],
+      } # Demande d'un nouvel envoi d'email de confirmation
+    - {
+        path: ^/api/request-password-reset,
+        roles: PUBLIC_ACCESS,
+        methods: [POST],
+      } # Demande de réinitialisation du mot de passe
+    - { path: ^/api/reset-password, roles: PUBLIC_ACCESS, methods: [POST] } # Réinitialisation du mot de passe
+    - { path: ^/api/user, roles: PUBLIC_ACCESS, methods: [POST] } # Création d'un utilisateur
 
-            # https://symfony.com/doc/current/security/impersonating_user.html
-            # switch_user: true
+    # <----- Accès réservé aux utilisateurs connectés -----> #
+    - { path: ^/api/user, roles: IS_AUTHENTICATED_FULLY, methods: [GET, PATCH] } # Récupérer ou modifier l'utilisateur connecté
 
-    # Easy way to control access for large sections of your site
-    # Note: Only the *first* access control that matches will be used
-    access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+    # <----- Accès réservé aux administrateurs -----> #
+    # - { path: ^/api/admin, roles: ROLE_ADMIN } # Toutes les routes sous /api/admin nécessitent le rôle ROLE_ADMIN
 
+    # <----- Accès réservé aux utilisateurs connectés -----> #
+    - { path: ^/api/roulette/, roles: IS_AUTHENTICATED_FULLY }
+
+    - { path: ^/api/hotelier/rooms, roles: ROLE_HOTELIER }
 when@test:
-    security:
-        password_hashers:
-            # By default, password hashers are resource intensive and take time. This is
-            # important to generate secure password hashes. In tests however, secure hashes
-            # are not important, waste resources and increase test times. The following
-            # reduces the work factor to the lowest possible values.
-            Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
-                algorithm: auto
-                cost: 4 # Lowest possible value for bcrypt
-                time_cost: 3 # Lowest possible value for argon
-                memory_cost: 10 # Lowest possible value for argon
+  security:
+    password_hashers:
+      # By default, password hashers are resource intensive and take time. This is
+      # important to generate secure password hashes. In tests however, secure hashes
+      # are not important, waste resources and increase test times. The following
+      # reduces the work factor to the lowest possible values.
+      Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
+        algorithm: auto
+        cost: 4 # Lowest possible value for bcrypt
+        time_cost: 3 # Lowest possible value for argon
+        memory_cost: 10 # Lowest possible value for argon
