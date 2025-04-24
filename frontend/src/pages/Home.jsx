@@ -4,6 +4,8 @@ import Navbar from "../components/Navbar";
 import Card from "../components/Card";
 import SearchForm from "../components/SearchForm";
 import Map from "../components/map/Map";
+import { Globe } from "../components/magicui/globe";
+
 
 const geocodeAddress = async (address) => {
   const res = await fetch(
@@ -82,17 +84,12 @@ export default function Home() {
               geocodeAddress={geocodeAddress}
             />
           ) : (
-            <div class="w-full md:min-h-full">
-              <div class="relative">
-                <span class="text-banner-title text-zinc-800 absolute !text-white px-4 md:px-10 top-24 md:text-6xl md:leading-[96px] font-outfit">
-                  Matchez avec votre prochaine destination
-                </span>
-              </div>
-              <img
-                class="rounded-lg w-full md:h-full md:object-cover"
-                src="https://app-staging.matchroom.io/images/search_header_banner.png"
-                alt="the presented room"
-              />
+            <div className="relative w-full h-[85vh] max-w-md mx-auto flex items-center justify-center overflow-hidden">
+             <Globe />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#F8F8F8] to-transparent opacity-50" />
+              <h1 className="text-2xl font-bold text-center text-gray-800 z-20">
+                Explorez le monde avec nous !
+              </h1>
             </div>
           )}
         </div>
