@@ -17,10 +17,6 @@ class Negociation
     #[ORM\Column]
     private ?int $id = null;
 
-    // #[ORM\OneToOne(inversedBy: 'negociation', cascade: ['persist', 'remove'])]
-    // #[ORM\JoinColumn(nullable: false)]
-    // private ?User $user = null;
-
     #[ORM\ManyToOne(inversedBy: 'negociations', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
