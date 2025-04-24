@@ -1,25 +1,37 @@
-import React, { useState } from 'react';
-import { Modal, Box } from '@mui/material';
+import React, { useState } from "react";
+import { Modal, Box } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const NegociationModal = ({ isOpen, onClose, data }) => {
   const [offer, setOffer] = useState(null);
+  const navigate = useNavigate();
 
+  function handleSubmit(e) {
+    e.preventDefault();
+    if (!offer || offer.trim() === "") {
+      alert("Veuillez entrer une offre valide.");
+      return;
+    }
+
+    console.log("Offre soumise :", offer);
+    navigate("/negociations");
+  }
   return (
-    <Modal 
-      open={isOpen} 
-      onClose={onClose} 
-      sx= {{
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        backdropFilter: 'blur(5px)',
+    <Modal
+      open={isOpen}
+      onClose={onClose}
+      sx={{
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
+        backdropFilter: "blur(5px)",
       }}
     >
       <Box
         className="absolute top-1/2 left-1/2 bg-white rounded-lg shadow-xl flex p-6 gap-6"
         style={{
-          transform: 'translate(-50%, -50%)',
-          width: '50%',
-          maxHeight: '50%',
-          overflowY: 'auto'
+          transform: "translate(-50%, -50%)",
+          width: "50%",
+          maxHeight: "50%",
+          overflowY: "auto",
         }}
       >
         <div className="relative w-1/2 rounded-xl overflow-hidden">
@@ -39,7 +51,7 @@ const NegociationModal = ({ isOpen, onClose, data }) => {
             type="number"
             onChange={(e) => setOffer(e.target.value)}
             style={{
-              boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
+              boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
             }}
             placeholder="Entrez votre proposition de prix..."
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-main"
@@ -49,7 +61,6 @@ const NegociationModal = ({ isOpen, onClose, data }) => {
             <button
               onClick={onClose}
               className="w-4/12 py-3 bg-blue-main text-white font-semibold rounded-lg shadow-md hover:bg-blue-900 transition"
-              
             >
               Annuler
             </button>
@@ -57,6 +68,7 @@ const NegociationModal = ({ isOpen, onClose, data }) => {
               type="submit"
               className="w-full py-3 bg-blue-main text-white font-semibold rounded-lg shadow-md hover:bg-blue-900 transition cursor-pointer"
               value="Envoyer"
+              onClick={handleSubmit}
             />
           </div>
         </div>
