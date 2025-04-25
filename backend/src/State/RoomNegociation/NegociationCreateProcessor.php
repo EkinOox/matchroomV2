@@ -34,6 +34,8 @@ class NegociationCreateProcessor implements ProcessorInterface
         $negociation->setProposedPrice($data->proposedPrice);
         $negociation->setStatus(NegociationStatus::PENDING);
         $negociation->setCreatedAt(new \DateTimeImmutable());
+        $negociation->setStartDate($data->startDate);
+        $negociation->setEndDate($data->endDate);
 
         $this->em->persist($negociation);
         $this->em->flush();

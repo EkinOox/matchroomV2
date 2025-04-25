@@ -1,108 +1,146 @@
-import { useState } from 'react';
-import OfferModal from '../components/OfferModal';
-
-const fakeNegotiations = [
-  {
-    id: 1,
-    publicPrice: 200,
-    offerPrice: 120,
-    requestedPrice: 150,
-    client: 'Client A',
-    expiresIn: '2h 59m',
-  },
-  {
-    id: 2,
-    publicPrice: 180,
-    offerPrice: 100,
-    requestedPrice: null,
-    client: 'Client B',
-    expiresIn: '1h 45m',
-  },
-];
+import { useEffect, useState } from 'react';
 
 const NegotiationManager = () => {
-  const [modalOpen, setModalOpen] = useState(false);
-  const [selectedOffer, setSelectedOffer] = useState(null);
+  const [negos, setNegotiatedRooms] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [counterOffers, setCounterOffers] = useState({});
+  const token = localStorage.getItem('token');
 
-  // 💡 Ajout des seuils locaux
-  const [acceptThreshold, setAcceptThreshold] = useState(75);
-  const [rejectThreshold, setRejectThreshold] = useState(50);
-
-  const handleChallenge = (negotiation) => {
-    setSelectedOffer(negotiation);
-    setModalOpen(true);
+  const fetchNegotiations = () => {
+    fetch('http://localhost:8000/api/hotelier/rooms/negotiations', {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/json',
+      },
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error('Erreur récupération chambres négociées');
+        return res.json();
+      })
+      .then((data) => {
+        const array = Array.isArray(data) ? data : data.member;
+        setNegotiatedRooms(array || []);
+      })
+      .catch((err) => {
+        console.error('Erreur hôtelier négo :', err);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
-  const handleValidate = (counterOffer) => {
-    console.log(`Contre-offre : ${counterOffer} € pour ${selectedOffer.client}`);
-    // tu peux ici ajouter une logique selon les seuils
-    setModalOpen(false);
-    setSelectedOffer(null);
+  useEffect(() => {
+    fetchNegotiations();
+  }, []);
+
+  const handleCounterOfferChange = (idNegociation, value) => {
+    setCounterOffers({ ...counterOffers, [idNegociation]: value });
+  };
+
+  const updateStatus = async (idNegociation, patchData, successMessage) => {
+    try {
+      const res = await fetch(`http://localhost:8000/api/negociations/${idNegociation}/update_status`, {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/ld+json',
+          'Content-Type': 'application/merge-patch+json',
+        },
+        body: JSON.stringify(patchData),
+      });
+
+      if (!res.ok) throw new Error("Erreur lors de la mise à jour");
+      alert(successMessage);
+      fetchNegotiations();
+    } catch (error) {
+      console.error("Erreur mise à jour :", error);
+    }
+  };
+
+  const handleSendCounterOffer = (idNegociation) => {
+    const value = counterOffers[idNegociation];
+    if (!value || isNaN(value)) {
+      alert("Veuillez entrer une contre-offre valide.");
+      return;
+    }
+
+    updateStatus(
+      idNegociation,
+      { counterOffer: Number(value), status: 'counter' },
+      'Contre-offre envoyée avec succès !'
+    );
+  };
+
+  const handleStatusUpdate = (idNegociation, status) => {
+    const messages = {
+      accepted: "Offre acceptée !",
+      refused: "Offre refusée.",
+    };
+
+    updateStatus(idNegociation, { status }, messages[status]);
   };
 
   return (
-    <div>
-      <h2 className="text-xl font-semibold mb-6">Seuil</h2>
+    <div className="max-w-6xl mx-auto p-6">
+      <h2 className="text-3xl font-bold text-neutral-800 mb-6">Chambres en négociation</h2>
 
-      {/* 🎯 Bloc Seuils */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 bg-gray-100 p-6 rounded-xl shadow">
-        <div>
-          <label className="block font-semibold text-gray-700 mb-1">Seuil d’Acceptation (%)</label>
-          <input
-            type="number"
-            value={acceptThreshold}
-            onChange={(e) => setAcceptThreshold(Number(e.target.value))}
-            className="w-full border border-gray-300 p-2 rounded"
-          />
-        </div>
-        <div>
-          <label className="block font-semibold text-gray-700 mb-1">Seuil de Refus (%)</label>
-          <input
-            type="number"
-            value={rejectThreshold}
-            onChange={(e) => setRejectThreshold(Number(e.target.value))}
-            className="w-full border border-gray-300 p-2 rounded"
-          />
-        </div>
-      </div>
-
-      {/* 🔁 Négociations */}
-      {fakeNegotiations.length === 0 ? (
-        <p className="text-gray-500 text-center">Aucune négociation en cours.</p>
+      {loading ? (
+        <p className="text-gray-500">Chargement...</p>
+      ) : negos.length === 0 ? (
+        <p className="text-gray-500">Aucune négociation en attente.</p>
       ) : (
-        <div className="space-y-4">
-          {fakeNegotiations.map((neg) => (
-            <div key={neg.id} className="bg-gray-100 p-4 rounded shadow flex justify-between items-center">
-              <div>
-                <p className="font-semibold text-gray-800">
-                  {neg.client} - Offre : {neg.offerPrice} € / Prix public : {neg.publicPrice} €
-                </p>
-                <p className="text-sm text-gray-500">Expire dans {neg.expiresIn}</p>
-              </div>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => handleChallenge(neg)}
-                  className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
-                >
-                  Contre offre
-                </button>
-                <button className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700">Accepter</button>
-                <button className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">Refuser</button>
+        <div className="grid gap-6">
+          {negos.map((negotiation) => (
+            <div
+              key={negotiation.idNegociation}
+              className="bg-white border border-gray-200 shadow-md rounded-xl p-6 transition hover:shadow-lg"
+            >
+              <div className="flex flex-col gap-4">
+                <div>
+                  <h3 className="text-xl font-semibold text-neutral-900">{negotiation.name}</h3>
+                  <p className="text-gray-600 mb-2">{negotiation.description}</p>
+                  <ul className="text-sm text-gray-700 space-y-1">
+                    <li>💶 Prix de base : <strong>{negotiation.price} €</strong></li>
+                    <li>🤝 Prix proposé : <strong>{negotiation.proposedPrice} €</strong></li>
+                    <li>📊 Contre-offre actuelle : <strong>{negotiation.counterOffer ?? 'Aucune'}</strong></li>
+                    <li>📌 Statut : <span className="capitalize">{negotiation.status}</span></li>
+                    <li>🕒 Réponse attendue : {negotiation.responseTime ? new Date(negotiation.responseTime).toLocaleString() : 'Non spécifiée'}</li>
+                  </ul>
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
+                  <input
+                    type="number"
+                    value={counterOffers[negotiation.idNegociation] || ''}
+                    onChange={(e) => handleCounterOfferChange(negotiation.idNegociation, e.target.value)}
+                    placeholder="Contre-offre (€)"
+                    className="w-full sm:w-1/3 px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-neutral-800"
+                  />
+                  <button
+                    onClick={() => handleSendCounterOffer(negotiation.idNegociation)}
+                    className="bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-900 transition"
+                  >
+                    Envoyer
+                  </button>
+                  <button
+                    onClick={() => handleStatusUpdate(negotiation.idNegociation, 'accepted')}
+                    className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition"
+                  >
+                    Accepter
+                  </button>
+                  <button
+                    onClick={() => handleStatusUpdate(negotiation.idNegociation, 'refused')}
+                    className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition"
+                  >
+                    Refuser
+                  </button>
+                </div>
               </div>
             </div>
           ))}
         </div>
       )}
-
-      {/* 🧩 Modale avec seuils passés en props */}
-      <OfferModal
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
-        onValidate={handleValidate}
-        offerPrice={selectedOffer?.offerPrice}
-        acceptThreshold={acceptThreshold}
-        rejectThreshold={rejectThreshold}
-      />
     </div>
   );
 };

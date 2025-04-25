@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\NegociationRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: NegociationRepository::class)]
@@ -39,6 +40,12 @@ class Negociation
 
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $StartDate = null;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $EndDate = null;
 
     public function __construct()
     {
@@ -130,6 +137,30 @@ class Negociation
     public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getStartDate(): ?\DateTimeInterface
+    {
+        return $this->StartDate;
+    }
+
+    public function setStartDate(\DateTimeInterface $StartDate): static
+    {
+        $this->StartDate = $StartDate;
+
+        return $this;
+    }
+
+    public function getEndDate(): ?\DateTimeInterface
+    {
+        return $this->EndDate;
+    }
+
+    public function setEndDate(\DateTimeInterface $EndDate): static
+    {
+        $this->EndDate = $EndDate;
 
         return $this;
     }

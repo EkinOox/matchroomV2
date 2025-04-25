@@ -292,11 +292,11 @@ use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
         // ),
 
         new Get(
-            uriTemplate: '/user/{id}',
+            uriTemplate: '/user',
             provider: UserReadProvider::class,
             output: UserReadDTO::class,
             name: 'userGet',
-            security: "is_granted('IS_AUTHENTICATED_FULLY') and user.getId() == request.attributes.get('id')",
+            security: "is_granted('IS_AUTHENTICATED_FULLY')",
             normalizationContext: [
                 'groups' => ['read:user'],
                 AbstractNormalizer::ALLOW_EXTRA_ATTRIBUTES => false,

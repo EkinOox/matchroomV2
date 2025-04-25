@@ -24,4 +24,10 @@ class NegociationOutput
 
     #[Groups(['negociation:read'])]
     public RoomOutput $room;
+
+    #[Groups(['negociation:read'])]
+    public ?\DateTimeInterface $startDate = null;
+
+    #[Groups(['negociation:read'])]
+    public ?\DateTimeInterface $endDate = null;
 }
