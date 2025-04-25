@@ -34,14 +34,16 @@ const NegociationModal = ({ isOpen, onClose, data }) => {
       open={isOpen}
       onClose={onClose}
       sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
         backgroundColor: "rgba(0, 0, 0, 0.5)",
         backdropFilter: "blur(5px)",
       }}
     >
       <Box
-        className="absolute top-1/2 left-1/2 bg-white rounded-lg shadow-xl flex p-6 gap-6 flex-col md:flex-row"
-        style={{
-          transform: "translate(-50%, -50%)",
+        className="absolute bg-white rounded-lg shadow-xl flex p-6 gap-6 flex-col md:flex-row"
+        sx={{
           width: "50%",
           height: "50vh",
           overflowY: "auto",
