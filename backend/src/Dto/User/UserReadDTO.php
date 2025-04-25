@@ -34,4 +34,7 @@ final class UserReadDTO
 
     #[Groups(['read:user'])]
     public ?HotelReadDTO $hotel = null;
+
+    #[Groups(['read:user'])]
+    public array $badges = [];
 }

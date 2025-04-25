@@ -4,6 +4,7 @@ namespace App\DataFixtures;
 
 use App\Entity\Room;
 use App\Entity\User;
+use App\Entity\Badge;
 use App\Entity\Hotel;
 use App\Entity\Feature;
 use App\Entity\Negociation;
@@ -46,6 +47,50 @@ class UserFixtures extends Fixture
             ],
         ];
 
+        $badges = [
+            [
+                'name' => 'Première Négociation',
+                'description' => 'Bravo ! Vous avez réussi votre toute première négociation. Bienvenue dans le club des négociateurs !',
+                'image' => '1.jpg',
+                'level' => 1
+            ],
+            [
+                'name' => '10 Négociations',
+                'description' => 'Félicitations ! Vous avez négocié 10 fois. Vous êtes déjà un expert des bons plans !',
+                'image' => '10.jpg',
+                'level' => 2
+            ],
+            [
+                'name' => '50 Négociations',
+                'description' => 'Impressionnant ! 50 négociations et vous êtes devenu un véritable maître dans l’art de la négociation.',
+                'image' => '50.jpg',
+                'level' => 3
+            ],
+            [
+                'name' => '100 Négociations',
+                'description' => 'Incroyable ! Vous avez franchi la barre des 100 négociations. Vous êtes désormais une légende du voyageur malin.',
+                'image' => '100.jpg',
+                'level' => 4
+            ],
+            [
+                'name' => 'Explorer Ultime',
+                'description' => 'Vous êtes l’Explorateur Ultime ! 500 négociations et vous avez fait plus de deals que tout le monde ! Vous connaissez tous les secrets de l’hôtel.',
+                'image' => '500.jpg',
+                'level' => 5
+            ]
+        ];
+
+        $allBadges = [];
+        foreach ($badges as $badgeData) {
+            $badge = new Badge();
+            $badge->setName($badgeData['name'])
+                ->setDescription($badgeData['description'])
+                ->setPathImage($badgeData['image'])
+                ->setLevel($badgeData['level']);
+            $manager->persist($badge);
+            $allBadges[] = $badge;
+        }
+
         // Création des objets hôtel et persistance
         $allHotels = [];
         foreach ($hotels as $hotelData) {
@@ -83,6 +128,7 @@ class UserFixtures extends Fixture
             $user->setPassword($this->passwordHasher->hashPassword($user, 'password'));
             $user->setFirstname($faker->firstName);
             $user->setLastname($faker->lastName);
+            $user->addBadge($allBadges[$i]);
             $user->setRoles(['ROLE_USER']);
             $manager->persist($user);
             $regularUsers[] = $user;
@@ -125,8 +171,8 @@ class UserFixtures extends Fixture
                 $room->setPrice(100 + $j * 10); // Prix variable
                 $room->setFolderImage("image$j.jpg");
                 $room->setCapacity(2 + $j % 2); // Capacité variable
-                $room->setAcceptanceThreshold(5);
-                $room->setRefusalThreshold(2);
+                $room->setAcceptanceThreshold(80);
+                $room->setRefusalThreshold(50);
 
                 // Associer chaque chambre à un hôtel
                 $room->setHotel($allHotels[$i]);
