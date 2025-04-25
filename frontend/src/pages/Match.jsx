@@ -38,7 +38,7 @@ export default function Home() {
       critere: formData.criteria,
       roomInfo: formData.result,
       dateDebut: formData.dateDebut,
-      dateFin: formData.dateFin
+      dateFin: formData.dateFin,
     };
 
     setSearchData(fullSearchData);
@@ -53,7 +53,7 @@ export default function Home() {
       lat: parseFloat(hotel.hotel.latitude),
       lng: parseFloat(hotel.hotel.longitude),
     };
-    
+
     setSelectedHotel(hotel);
     setHotelCoords(hotelCoords);
   };
@@ -61,7 +61,7 @@ export default function Home() {
   const handleNoHotels = (noHotels) => {
     setHasHotels(!noHotels); // Mise à jour de l'état en fonction de la présence d'hôtels
   };
-  
+
   return (
     <div className="min-h-screen bg-[#F8F8F8]">
       <Navbar />
@@ -81,14 +81,13 @@ export default function Home() {
               )}
             </>
           ) : (
-            <div className="relative w-full h-[100vh] max-w-md mx-auto flex items-center justify-center overflow-hidden">
-              <div className="absolute inset-0 flex items-center justify-center">
+            <div className="relative w-full max-w-md mx-auto flex items-center justify-center overflow-hidden">
+              <div className="inset-0 flex flex-col items-center justify-center">
                 <Globe />
+                <h1 className="text-2xl font-bold text-center text-gray-800 z-20">
+                  Matchez avec votre prochaine destination grâce à MatchRoom !
+                </h1>
               </div>
-              <div className="absolute inset-0 bg-gradient-to-t from-[#F8F8F8] to-transparent opacity-50" />
-              <h1 className="text-2xl font-bold text-center text-gray-800 z-20">
-                Matchez avec votre prochaine destination grâce à MatchRoom !
-              </h1>
             </div>
           )}
         </div>
