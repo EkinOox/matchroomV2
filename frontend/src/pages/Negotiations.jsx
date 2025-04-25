@@ -103,12 +103,11 @@ const Negotiations = () => {
   useEffect(() => {
     // Vérification du token (avant de procéder à la recherche)
     const token = localStorage.getItem("token");
-    /*
+
     if (!token) {
       navigate("/login"); // Redirection vers la page de login si aucun token
       return;
     }
-      */
 
     fetch('http://localhost:8000/api/my/negociations')
       .then(response => response.json())
