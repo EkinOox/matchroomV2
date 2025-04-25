@@ -208,6 +208,10 @@ class UserFixtures extends Fixture
             // Statut initial
             $negociation->setStatus('pending');
 
+            $negociation->setStartDate(new \DateTimeImmutable());
+
+            $negociation->setEndDate(new \DateTimeImmutable('+5 day'));
+
             // Date de création
             $negociation->setCreatedAt(new \DateTimeImmutable());
 
