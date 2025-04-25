@@ -55,7 +55,10 @@ final class RoomSearchProcessor implements ProcessorInterface
         if ($collection instanceof PaginatorInterface) {
             $dtos = [];
             foreach ($collection as $room) {
-                $dtos[] = $this->mapToRoomSearchReadDto($room);
+                $dto = $this->mapToRoomSearchReadDto($room);
+                $dto->longitudeClient = $longitude;
+                $dto->latitudeClient = $latitude;
+                $dtos[] = $dto;
             }
 
             return new TraversablePaginator(
@@ -67,6 +70,10 @@ final class RoomSearchProcessor implements ProcessorInterface
         } else {
             // Pour les collections non paginées
             $dtos = array_map([$this, 'mapToRoomSearchReadDto'], iterator_to_array($collection));
+            foreach ($dtos as $dto) {
+                $dto->longitudeClient = $longitude;
+                $dto->latitudeClient = $latitude;
+            }
             return new TraversablePaginator(
                 new \ArrayIterator($dtos),
                 1, // Current page

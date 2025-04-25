@@ -25,6 +25,12 @@ final class RoomSearchReadDTO
     #[Groups(['readSearch:room'])]
     public ?int $capacity = null;
 
+    #[Groups(['readSearch:room'])]
+    public ?float $longitudeClient = null;
+
+    #[Groups(['readSearch:room'])]
+    public ?float $latitudeClient = null;
+
     /**
      * @var FeatureReadDTO[]
      */
