@@ -8,6 +8,7 @@ use App\Entity\Badge;
 use App\Entity\Hotel;
 use App\Entity\Feature;
 use App\Entity\Negociation;
+use App\Entity\Reservation;
 use Faker\Factory as Faker;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -105,10 +106,9 @@ class UserFixtures extends Fixture
             $allHotels[] = $hotel;
         }
 
-        // Créer une instance de Faker pour générer des données aléatoires
+        // Création des objets utilisateur et persistance
         $faker = Faker::create();
 
-        // Créer 3 utilisateurs avec le rôle hôtelier et 3 utilisateurs sans ce rôle
         $hotelierUsers = [];
         $regularUsers = [];
 
@@ -134,7 +134,7 @@ class UserFixtures extends Fixture
             $regularUsers[] = $user;
         }
 
-        // Créer des caractéristiques (features)
+        // Création des caractéristiques (features)
         $features = [];
         $featureNames = [
             'Wi-Fi',
@@ -161,7 +161,7 @@ class UserFixtures extends Fixture
             $features[] = $feature;
         }
 
-        // Créer des chambres et associer des caractéristiques et des hôtels
+        // Création des chambres et associer des caractéristiques et des hôtels
         $rooms = [];
         for ($i = 0; $i < 4; $i++) { // Pour chaque hôtel
             for ($j = 1; $j <= 5; $j++) { // Créer 5 chambres par hôtel
@@ -192,7 +192,7 @@ class UserFixtures extends Fixture
             }
         }
 
-        // Créer des négociations pour chaque hôtel et chaque chambre
+        // Création des négociations pour chaque hôtel et chaque chambre
         for ($i = 0; $i < 15; $i++) { // 3 hôtels x 5 chambres = 15 chambres
             $negociation = new Negociation();
 
@@ -209,7 +209,6 @@ class UserFixtures extends Fixture
             $negociation->setStatus('pending');
 
             $negociation->setStartDate(new \DateTimeImmutable());
-
             $negociation->setEndDate(new \DateTimeImmutable('+5 day'));
 
             // Date de création
@@ -217,6 +216,33 @@ class UserFixtures extends Fixture
 
             // Persist la négociation
             $manager->persist($negociation);
+        }
+
+        // Création des réservations pour chaque chambre
+        for ($i = 0; $i < 15; $i++) { // 3 hôtels x 5 chambres = 15 chambres
+            $reservation = new Reservation();
+
+            // Associer un utilisateur régulier (cycle parmi les 3 utilisateurs)
+            $reservation->setUser($regularUsers[$i % 3]);
+
+            // Associer une chambre à la réservation
+            $reservation->setRoom($rooms[$i]);
+
+            // Générer une date de début aléatoire (1 à 30 jours à partir de maintenant)
+            $startDate = new \DateTimeImmutable("+" . rand(1, 30) . " days");
+
+            // Générer une durée de réservation aléatoire entre 1 et 7 jours
+            $duration = rand(1, 7);
+
+            // Définir les dates de début et de fin de la réservation
+            $reservation->setStartedAt($startDate);
+            $reservation->setEndAt($startDate->add(new \DateInterval("P{$duration}D"))); // Ajouter le nombre de jours à la date de début
+
+            // Date de création
+            $reservation->setCreatedAt(new \DateTimeImmutable());
+
+            // Persist la réservation
+            $manager->persist($reservation);
         }
 
         $manager->flush();

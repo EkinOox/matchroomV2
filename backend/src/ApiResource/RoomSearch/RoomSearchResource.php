@@ -56,6 +56,18 @@ use App\Entity\Room;
                                         'example' => 2,
                                         'description' => 'Nombre de voyageurs'
                                     ],
+                                    'dateDebut' => [
+                                        'type' => 'string',
+                                        'format' => 'date',
+                                        'example' => '2025-04-20',
+                                        'description' => 'Date de début de la réservation'
+                                    ],
+                                    'dateFin' => [
+                                        'type' => 'string',
+                                        'format' => 'date',
+                                        'example' => '2025-04-24',
+                                        'description' => 'Date de fin de la réservation'
+                                    ],
                                     'critere' => [
                                         'type' => 'array',
                                         'items' => [
@@ -65,7 +77,7 @@ use App\Entity\Room;
                                         'description' => 'IDs des critères de recherche'
                                     ]
                                 ],
-                                'required' => ['longitude', 'latitude', 'NbVoyageur', 'critere']
+                                'required' => ['longitude', 'latitude', 'NbVoyageur', 'critere', 'dateDebut', 'dateFin']
                             ])
                         )
                     ])
