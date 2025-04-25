@@ -34,6 +34,14 @@ function Navbar() {
     setAnchorEl(null);
   };
 
+  const handleReturn = () => {
+    if (location.pathname === "/") {
+      setIsLogoutModalOpen(false);
+    } else {
+      navigate("/");
+    }
+  };
+
   return (
     <nav className="flex items-center justify-between px-8 py-4 bg-white shadow-md rounded-lg">
       <h1 className="text-2xl font-bold text-black">Matchroom</h1>
@@ -88,7 +96,6 @@ function Navbar() {
 
       <Modal
         open={isLogoutOpen}
-        onClose={() => setIsLogoutModalOpen(false)}
         sx={{
           display: "flex",
           justifyContent: "center",
@@ -100,12 +107,12 @@ function Navbar() {
         <div className="bg-white flex flex-col p-16 gap-4 rounded-lg shadow-lg text-center">
           <h2 className="text-3xl font-bold">Déconnexion</h2>
           <span>Vous vous êtes déconnecté avec succès</span>
-          <Link
+          <button
+            onClick={handleReturn}
             className="w-full py-3 bg-blue-main text-white font-semibold rounded-lg shadow-md hover:bg-blue-900 transition cursor-pointer"
-            to="/"
           >
             Retour à l'accueil
-          </Link>
+          </button>
         </div>
       </Modal>
     </nav>
