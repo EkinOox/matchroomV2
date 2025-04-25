@@ -4,7 +4,7 @@ const NegotiationCard = ({ negotiation }) => {
     switch (status) {
       case 'accepted':
         return { backgroundColor: '#d4edda' }; // green-ish
-      case 'rejected':
+      case 'refused':
         return { backgroundColor: '#f8d7da' }; // red-ish
       case 'counter':
         return { backgroundColor: '#fff3cd' }; // yellow-ish
