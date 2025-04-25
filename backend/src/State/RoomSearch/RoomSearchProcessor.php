@@ -2,17 +2,19 @@
 
 namespace App\State\RoomSearch;
 
-use App\Repository\RoomRepository;
-use App\Dto\Hotel\HotelReadDTO;
-use App\Dto\Feature\FeatureReadDTO;
-use App\Repository\HotelRepository;
 use App\Entity\Room;
-use App\Dto\Room\RoomSearchReadDTO;
+use App\Dto\Hotel\HotelReadDTO;
+use App\Repository\RoomRepository;
 use ApiPlatform\Metadata\Operation;
+use App\Dto\Feature\FeatureReadDTO;
+use App\Dto\Room\RoomSearchReadDTO;
+use App\Repository\HotelRepository;
 use ApiPlatform\State\ProcessorInterface;
+use App\Repository\NegociationRepository;
 use ApiPlatform\State\Pagination\PaginatorInterface;
 use ApiPlatform\State\Pagination\TraversablePaginator;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * @implements ProcessorInterface<RoomSearchCreateDTO, RoomSearchReadDTO>
@@ -21,7 +23,9 @@ final class RoomSearchProcessor implements ProcessorInterface
 {
     public function __construct(
         private RoomRepository $roomRepository,
-        private HotelRepository $hotelRepository
+        private HotelRepository $hotelRepository,
+        private TokenStorageInterface $tokenStorage,
+        private NegociationRepository $negociationRepository
     ) {}
 
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): RoomSearchReadDTO|TraversablePaginator
@@ -40,8 +44,30 @@ final class RoomSearchProcessor implements ProcessorInterface
             throw new NotFoundHttpException('Les coordonnées de longitude et latitude sont requises.');
         }
 
+        // Récupérer l'utilisateur connecté via le TokenStorageInterface
+        $token = $this->tokenStorage->getToken();
+        if (null === $token) {
+            throw new \LogicException('Le token de sécurité devrait être disponible.');
+        }
+
+        /** @var User $user */
+        $user = $token->getUser();
+
         // Récupérer les hôtels à proximité (calcul de distance)
         $hotelsInRadius = $this->getNearbyHotels($longitude, $latitude);
+
+        // Vérifier s'il existe déjà une négociation pour la même chambre et la même période
+        $existingNegotiations = $this->negociationRepository->findBy([
+            'user' => $user,
+            'StartDate' => $dateDebut,
+            'EndDate' => $dateFin,
+        ]);
+
+        // Récupérer l'ID des chambres déjà négociées
+        $negotiatedRoomIds = [];
+        foreach ($existingNegotiations as $negociation) {
+            $negotiatedRoomIds[] = $negociation->getRoom()->getId(); // Récupérer l'ID de la chambre négociée
+        }
 
         // Obtenir la requête personnalisée via le repository
         $queryBuilder = $this->roomRepository->searchRooms(
@@ -49,7 +75,8 @@ final class RoomSearchProcessor implements ProcessorInterface
             $NbVoyageur,
             $critere,
             $dateDebut,
-            $dateFin
+            $dateFin,
+            $negotiatedRoomIds
         );
 
         $query = $queryBuilder->getQuery();
