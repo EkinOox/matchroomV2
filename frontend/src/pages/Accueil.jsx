@@ -3,6 +3,8 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { Ripple } from "@/components/magicui/ripple";
 import { Marquee } from "@/components/magicui/marquee";
+import { InteractiveHoverButton } from "@/components/magicui/interactive-hover-button";
+
 import { cn } from "@/lib/utils";
 
 // Données des avis
@@ -157,6 +159,7 @@ const Accueil = () => {
             alt="Illustration ordinateur"
           />
         </div>
+        <InteractiveHoverButton to="/match">Commencer à Matcher !</InteractiveHoverButton>
       </section>
 
       {/* Section des avis */}
@@ -182,7 +185,7 @@ const Accueil = () => {
       </section>
 
       {/* Séparateur visuel moderne */}
-      <div className="w-full h-24 bg-gradient-to-b from-gray-50 to-white" />
+      <div className="w-full h-24 bg-gradient-to-b from-gray-200 to-white" />
 
       {/* Section infos MatchRoom */}
       <section className="bg-white py-20 px-6 sm:px-12 md:px-24">
