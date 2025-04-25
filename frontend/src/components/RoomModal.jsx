@@ -29,15 +29,15 @@ const RoomModal = ({ isOpen, onClose, data }) => {
       }}
     >
       <Box
-        className="absolute top-1/2 left-1/2 bg-white rounded-lg shadow-xl flex p-6 gap-6"
+        className="absolute top-1/2 left-1/2 bg-white rounded-lg shadow-xl flex p-6 gap-6 flex-col md:flex-row"
         style={{
           transform: 'translate(-50%, -50%)',
           width: '80%',
-          maxHeight: '80%',
+          height: "80vh",
           overflowY: 'auto'
         }}
       >
-        <div className="relative w-1/2 rounded-xl overflow-hidden">
+        <div className="relative w-full md:w-1/2 rounded-xl overflow-hidden">
           <img
             src={data.imageUrl}
             alt={data.name}
@@ -49,7 +49,7 @@ const RoomModal = ({ isOpen, onClose, data }) => {
           </div>
         </div>
 
-        <div className="w-1/2 flex flex-col gap-4">
+        <div className="w-full md:w-1/2 flex flex-col gap-4">
           <p>{data.description}</p>
           <div className="space-y-3">
             {data.features.map((feature, index) => (
