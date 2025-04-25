@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Navbar from "../components/Navbar";
 import Card from "../components/Card";
 import SearchForm from "../components/SearchForm";
@@ -10,8 +10,9 @@ export default function Home() {
   const [searchData, setSearchData] = useState(null); // Données de recherche à envoyer à l'API
   const [userCoords, setUserCoords] = useState(null); // Coordonnées de l'utilisateur
   const [hotelCoords, setHotelCoords] = useState(null); // Coordonnées de l'hôtel
-  const [selectedHotel, setSelectedHotel] = useState(null);
-  const [searchDone, setSearchDone] = useState(false);
+  const [selectedHotel, setSelectedHotel] = useState(null); // Hôtel sélectionné
+  const [searchDone, setSearchDone] = useState(false); // Indicateur de recherche terminée
+  const [hasHotels, setHasHotels] = useState(true); // Indicateur de présence d'hôtels
 
   // Fonction appelée depuis SearchForm
   const handleSearch = async (formData) => {
@@ -41,20 +42,24 @@ export default function Home() {
     setSearchData(fullSearchData);
     setSearchDone(true);
   };
+
   // Quand on sélectionne un autre hôtel
   const handleHotelSelection = (hotel) => {
- 
+    if (selectedHotel?.hotel?.name === hotel?.hotel?.name) return; // Éviter la sélection de l'hôtel déjà sélectionné
+
     const hotelCoords = {
       lat: parseFloat(hotel.hotel.latitude),
       lng: parseFloat(hotel.hotel.longitude),
     };
-
+    
     setSelectedHotel(hotel);
     setHotelCoords(hotelCoords);
-    console.log("Selected hotel:", hotelCoords);
-    
   };
 
+  const handleNoHotels = (noHotels) => {
+    setHasHotels(!noHotels); // Mise à jour de l'état en fonction de la présence d'hôtels
+  };
+  
   return (
     <div className="min-h-screen bg-[#F8F8F8]">
       <Navbar />
@@ -66,8 +71,12 @@ export default function Home() {
               <Card
                 onSwipe={(hotel) => handleHotelSelection(hotel)}
                 searchData={searchData}
+                onNoHotels={handleNoHotels}
               />
-              <Map origin={userCoords} destination={hotelCoords} />
+              {/* Affiche la carte uniquement si un hôtel est sélectionné ou si des hôtels sont disponibles */}
+              {hasHotels && (
+                <Map origin={userCoords} destination={hotelCoords} />
+              )}
             </>
           ) : (
             <div className="relative w-full h-[100vh] max-w-md mx-auto flex items-center justify-center overflow-hidden">

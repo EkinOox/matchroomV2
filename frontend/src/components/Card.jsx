@@ -5,7 +5,7 @@ import NegociationModal from "./NegociationModal";
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import CloseIcon from '@mui/icons-material/Close';
 
-export default function Card({ onSwipe, searchData }) {
+export default function Card({ onSwipe, searchData, onNoHotels }) {
   const [cards, setCards] = useState([]);
   const [swipeDirection, setSwipeDirection] = useState(null);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -24,11 +24,19 @@ export default function Card({ onSwipe, searchData }) {
     setCards(formatted);
   }, [searchData]);
 
-  // useEffect(() => {
-  //   if (cards.length > 0 && onSwipe) {
-  //     onSwipe(cards[0]);
-  //   }
-  // }, [cards, onSwipe]);
+  useEffect(() => {
+    if (cards.length > 0 && onSwipe) {
+      onSwipe(cards[0]);
+    }
+  }, [cards, onSwipe]);
+  
+  useEffect(() => {
+    if (cards.length === 0 && onNoHotels) {
+      onNoHotels(true);
+    } else if (cards.length > 0 && onNoHotels) {
+      onNoHotels(false);
+    }
+  }, [cards, onNoHotels]);
 
   const handleSwipe = (direction) => {
     if (!cards.length || isAnimating) return;
@@ -45,8 +53,7 @@ export default function Card({ onSwipe, searchData }) {
       setSwipeDirection(null);
       setIsAnimating(false);
     }, 300);
-};
-
+  };
 
   return (
     <div className="relative w-[50vh] h-[50vh] max-w-md mx-auto flex items-center justify-center overflow-hidden">
