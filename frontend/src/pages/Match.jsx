@@ -37,6 +37,8 @@ export default function Home() {
       NbVoyageur: parseInt(formData.travelers, 10),
       critere: formData.criteria,
       roomInfo: formData.result,
+      dateDebut: formData.dateDebut,
+      dateFin: formData.dateFin
     };
 
     setSearchData(fullSearchData);

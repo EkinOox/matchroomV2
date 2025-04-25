@@ -114,6 +114,8 @@ export default function SearchForm({ onSearch }) {
           travelers: travelers,
           criteria: selectedCriteria,
           result: data.member,
+          dateDebut: startDate,
+          dateFin: endDate
         });
       } catch (err) {
         setError(err.message);
