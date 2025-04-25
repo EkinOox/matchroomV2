@@ -120,7 +120,7 @@ const Negotiations = () => {
           setNegociations(data.member);
         } else {
           console.error("Format inattendu :", data);
-          setNegociations([]);
+          setNegociations(negociationSet);
         }
       })
       .catch((error) => {
