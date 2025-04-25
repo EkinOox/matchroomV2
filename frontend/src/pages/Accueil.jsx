@@ -110,7 +110,7 @@ const Accueil = () => {
 
       <section className="px-6 md:px-20 py-20 flex flex-col md:flex-row gap-16 bg-gray-100">
         <div className="w-full md:w-6/12 flex flex-col justify-center gap-6">
-          <h2 className="text-4xl md:text-5xl font-extrabold text-gray-800 leading-tight drop-shadow-sm">
+          <h2 className="text-3xl text-center md:text-left md:text-5xl font-extrabold text-gray-800 leading-tight drop-shadow-sm">
             L’expérience MatchRoom : Négociez votre chambre au meilleur prix
           </h2>
           <p className="text-md md:text-lg text-gray-600 leading-relaxed">
@@ -145,16 +145,16 @@ const Accueil = () => {
       </section>
 
       {/* Section avec Ripple */}
-      <section className="p-16 flex flex-col items-center gap-16 text-center">
-        <h2 className="text-5xl font-bold text-black">
+      <section className="pb-5 md:p-16 flex flex-col items-center gap-16 text-center">
+        <h2 className="md:text-5xl text-3xl font-bold text-black">
           Cherchez. Négociez. Réservez.
         </h2>
         <div className="relative w-full flex justify-center items-center">
-          <div className="absolute z-1 flex h-[800px] w-full items-center justify-center">
+          <div className="absolute z-1 flex h-[800px] w-full items-center justify-center overflow-hidden">
             <Ripple />
           </div>
           <img
-            className="relative z-10 w-8/12 max-w-3xl rounded-lg"
+            className="relative z-10 w-full md:w-8/12 max-w-3xl rounded-lg"
             src="/accueil-computer.svg"
             alt="Illustration ordinateur"
           />
