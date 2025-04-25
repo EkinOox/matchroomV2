@@ -159,7 +159,7 @@ export default function SearchForm({ onSearch }) {
         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-main"
         required
       />
-      <div className="flex gap-4">
+      <div className="flex flex-col md:flex-row gap-4">
         <div className="flex-col w-full">
           <label>Date de début :</label>
           <input

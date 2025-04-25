@@ -64,9 +64,8 @@ const NegociationModal = ({ isOpen, onClose, data, searchData }) => {
       }}
     >
       <Box
-        className="absolute bg-white rounded-lg shadow-xl flex p-6 gap-6 flex-col md:flex-row"
+        className="absolute bg-white w-4/5 md:w-1/2 rounded-lg shadow-xl flex p-6 gap-6 flex-col md:flex-row"
         sx={{
-          width: "50%",
           height: "50vh",
           overflowY: "auto",
         }}
@@ -75,7 +74,7 @@ const NegociationModal = ({ isOpen, onClose, data, searchData }) => {
           <img
             src={data.imageUrl}
             alt={data.name}
-            className="w-full h-full object-cover"
+            className="w-full h-[230px] md:h-full object-cover"
           />
           <div className="absolute bottom-0 left-0 w-full bg-black/75 text-white p-4">
             <h3 className="font-bold text-lg">{data.name}</h3>

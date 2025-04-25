@@ -1,44 +1,42 @@
-import React from 'react';
-import HotelIcon from '@mui/icons-material/Hotel';
-import PoolIcon from '@mui/icons-material/Pool';
-import RestaurantIcon from '@mui/icons-material/Restaurant';
-import NetworkWifiIcon from '@mui/icons-material/NetworkWifi';
-import BedIcon from '@mui/icons-material/Bed';
-import HvacIcon from '@mui/icons-material/Hvac';
-import { Modal, Box } from '@mui/material';
+import React from "react";
+import HotelIcon from "@mui/icons-material/Hotel";
+import PoolIcon from "@mui/icons-material/Pool";
+import RestaurantIcon from "@mui/icons-material/Restaurant";
+import NetworkWifiIcon from "@mui/icons-material/NetworkWifi";
+import BedIcon from "@mui/icons-material/Bed";
+import HvacIcon from "@mui/icons-material/Hvac";
+import { Modal, Box } from "@mui/material";
 
 const iconMap = {
-  'Piscine': <PoolIcon />,
-  'Restaurant': <RestaurantIcon />,
-  'Wi-Fi': <NetworkWifiIcon />,
-  'Lit simple': <BedIcon />,
-  'Climatisation': <HvacIcon />,
-  'Lit double': <HotelIcon />,
+  Piscine: <PoolIcon />,
+  Restaurant: <RestaurantIcon />,
+  "Wi-Fi": <NetworkWifiIcon />,
+  "Lit simple": <BedIcon />,
+  Climatisation: <HvacIcon />,
+  "Lit double": <HotelIcon />,
 };
 
 const RoomModal = ({ isOpen, onClose, data }) => {
-
   return (
-    <Modal 
-      open={isOpen} 
-      onClose={onClose} 
+    <Modal
+      open={isOpen}
+      onClose={onClose}
       sx={{
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        backdropFilter: 'blur(5px)',
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
+        backdropFilter: "blur(5px)",
       }}
     >
       <Box
-        className="absolute top-1/2 left-1/2 bg-white rounded-lg shadow-xl flex p-6 gap-6 flex-col md:flex-row"
+        className="absolute top-1/2 left-1/2 h-auto md:h-[80vh] bg-white rounded-lg shadow-xl flex p-6 gap-6 flex-col md:flex-row"
         style={{
-          transform: 'translate(-50%, -50%)',
-          width: '80%',
-          height: "80vh",
-          overflowY: 'auto'
+          transform: "translate(-50%, -50%)",
+          width: "80%",
+          overflowY: "auto",
         }}
       >
         <div className="relative w-full md:w-1/2 rounded-xl overflow-hidden">
           <img
-            src={data.imageUrl}
+            src={data.imageUrl || data.folderImage}
             alt={data.name}
             className="w-full h-full object-cover"
           />
@@ -50,14 +48,18 @@ const RoomModal = ({ isOpen, onClose, data }) => {
 
         <div className="w-full md:w-1/2 flex flex-col gap-4">
           <p>{data.description}</p>
-          <div className="space-y-3">
-            {data.features.map((feature, index) => (
-              <div key={index} className="flex items-center gap-3">
-                {iconMap[feature.name] || <HotelIcon />} {/* Affichage de l'ic�ne */}
-                <span className="text-gray-800">{feature.name}</span> {/* Affichage du nom */}
-              </div>
-            ))}
-          </div>
+          {data.features?.length > 0 && (
+            <div className="space-y-3">
+              {data.features.map((feature, index) => (
+                <div key={index} className="flex items-center gap-3">
+                  {iconMap[feature.name] || <HotelIcon />}{" "}
+                  {/* Affichage de l'icone */}
+                  <span className="text-gray-800">{feature.name}</span>{" "}
+                  {/* Affichage du nom */}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         <button

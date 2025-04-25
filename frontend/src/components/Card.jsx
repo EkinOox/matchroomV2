@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import RoomModal from "./RoomModal";
 import NegociationModal from "./NegociationModal";
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import CloseIcon from '@mui/icons-material/Close';
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import CloseIcon from "@mui/icons-material/Close";
 
 export default function Card({ onSwipe, searchData, onNoHotels }) {
   const [cards, setCards] = useState([]);
@@ -18,7 +18,9 @@ export default function Card({ onSwipe, searchData, onNoHotels }) {
     const formatted = searchData.roomInfo.map((room) => ({
       ...room,
       price: room.price || "Prix non disponible",
-      imageUrl: room.folderImage || "https://media.istockphoto.com/id/104731717/fr/photo/centre-de-vill%C3%A9giature-de-luxe.jpg?s=612x612&w=0&k=20&c=qn-Ugr3N5J_JBKZttni3vimlfBOd52jWG3FouENXye0=",
+      imageUrl:
+        room.folderImage ||
+        "https://media.istockphoto.com/id/104731717/fr/photo/centre-de-vill%C3%A9giature-de-luxe.jpg?s=612x612&w=0&k=20&c=qn-Ugr3N5J_JBKZttni3vimlfBOd52jWG3FouENXye0=",
     }));
 
     setCards(formatted);
@@ -29,7 +31,7 @@ export default function Card({ onSwipe, searchData, onNoHotels }) {
       onSwipe(cards[0]);
     }
   }, [cards, onSwipe]);
-  
+
   useEffect(() => {
     if (cards.length === 0 && onNoHotels) {
       onNoHotels(true);
@@ -56,7 +58,7 @@ export default function Card({ onSwipe, searchData, onNoHotels }) {
   };
 
   return (
-    <div className="relative w-[50vh] h-[50vh] max-w-md mx-auto flex items-center justify-center overflow-hidden">
+    <div className="relative w-[40vh] md:w-[50vh] h-[50vh] max-w-full md:max-w-md mx-auto flex items-center justify-center overflow-hidden">
       <AnimatePresence>
         {cards.length > 0 &&
           cards.slice(0, 1).map((hotel) => (
@@ -83,7 +85,10 @@ export default function Card({ onSwipe, searchData, onNoHotels }) {
               }}
             >
               <button
-                className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white text-black font-bold text-md flex items-center justify-center z-10 hover:bg-blue-500"
+                className="absolute top-2 right-2 w-10 h-10 rounded-full bg-[#e0e0e0] text-black font-bold text-md flex items-center justify-center z-10
+    shadow-[2px_2px_15px_#bebebe,-4px_-4px_15px_#ffffff]
+    hover:shadow-[inset_4px_4px_8px_#bebebe,inset_-4px_-4px_8px_#ffffff]
+    transition-all duration-300 ease-in-out"
                 onClick={() => setIsRoomModalOpen(true)}
               >
                 i
@@ -118,8 +123,12 @@ export default function Card({ onSwipe, searchData, onNoHotels }) {
               </div>
 
               <div className="flex flex-col justify-center h-36 relative z-10 p-4 bg-black/30 backdrop-blur-md rounded-t-2xl mt-auto">
-                <h3 className="text-2xl font-semibold text-center">{hotel.name}</h3>
-                <p className="text-center text-gray-200">{hotel.price} € / Nuits</p>
+                <h3 className="text-2xl font-semibold text-center">
+                  {hotel.name}
+                </h3>
+                <p className="text-center text-gray-200">
+                  {hotel.price} € / Nuits
+                </p>
               </div>
             </motion.div>
           ))}
