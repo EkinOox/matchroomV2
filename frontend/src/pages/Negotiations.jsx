@@ -1,13 +1,11 @@
 import Navbar from '../components/Navbar';
 import { useEffect, useState } from 'react';
-import Tabs from '../components/NegotiationTabs';
-import { fetchHotels } from '../api/hotels';
 import NegotiationCard from '../components/NegotiationCard';
-import NegotiationTabs from '../components/NegotiationTabs';
+import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 
 const Negotiations = () => {
-  const [status, setStatus] = useState('pending');
   const [negociations, setNegociations] = useState([]);
+  const [filterStatus, setFilterStatus] = useState('all');
 
   const negociationSet = [
     {
@@ -101,8 +99,13 @@ const Negotiations = () => {
       .then(setHotels)
       .catch(console.error);
     */
-    setNegociations(negociationSet.filter(nego => nego.status === status));
-  }, [status]);
+
+    //Filtre les negociations
+    const filteredNego = filterStatus === 'all'
+    ? negociationSet
+    : negociationSet.filter(nego => nego.status === filterStatus);
+    setNegociations(filteredNego);
+  }, [filterStatus]);
 
   return (
     <div className="min-h-screen bg-[#F8F8F8]">
@@ -114,8 +117,20 @@ const Negotiations = () => {
           <h1 className="text-2xl font-bold text-gray-800">Négociations</h1>
         </div>
 
-        {/* Onglets */}
-        <NegotiationTabs active={status} onChange={setStatus} />
+        {/* Filtres */}
+        <FormControl fullWidth>
+          <InputLabel>Statut</InputLabel>
+          <Select
+          value={filterStatus}
+          label="Age"
+          onChange={(e) => setFilterStatus(e.target.value)}>
+            <MenuItem value={"all"}>Toutes</MenuItem>
+            <MenuItem value={"approved"}>Approuvée</MenuItem>
+            <MenuItem value={"rejected"}>Rejetée</MenuItem>
+            <MenuItem value={"pending"}>En attente</MenuItem>
+            <MenuItem value={"challenged"}>Contre offre</MenuItem>
+          </Select>
+        </FormControl>
 
         {/* Liste des hôtels */}
         <div className="mt-6 space-y-6">
