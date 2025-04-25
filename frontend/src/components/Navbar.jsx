@@ -1,7 +1,8 @@
 import { Modal, Menu, MenuItem } from '@mui/material';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import jwt_decode from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
+
 
 function Navbar() {
   // Vérifier si le token est présent dans le localStorage
@@ -13,7 +14,7 @@ function Navbar() {
 
   const handleLogout = () => {
     localStorage.removeItem('token');
-    const decoded = jwt_decode(token);
+    const decoded = jwtDecode(token);
     console.log(decoded);
     
     setIsLogoutModalOpen(true);
