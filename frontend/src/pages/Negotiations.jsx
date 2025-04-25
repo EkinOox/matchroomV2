@@ -99,6 +99,14 @@ const Negotiations = () => {
     }
   ];
 
+  const updateNego = (updatedNego) => {
+    setNegociations(prevNegos =>
+      prevNegos.map(nego =>
+        nego.id === updatedNego.id ? updatedNego : nego
+      )
+    );
+  }
+
   useEffect(() => {
     const token = localStorage.getItem("token");
 
@@ -162,10 +170,11 @@ const Negotiations = () => {
                 onChange={(e) => setFilterStatus(e.target.value)}
               >
                 <MenuItem value={"all"}>Toutes</MenuItem>
-                <MenuItem value={"accepted"}>Approuvée</MenuItem>
-                <MenuItem value={"refused"}>Rejetée</MenuItem>
+                <MenuItem value={"confirmed"}>Confirmées</MenuItem>
+                <MenuItem value={"accepted"}>Approuvées</MenuItem>
+                <MenuItem value={"refused"}>Rejetées</MenuItem>
                 <MenuItem value={"pending"}>En attente</MenuItem>
-                <MenuItem value={"counter"}>Contre offre</MenuItem>
+                <MenuItem value={"counter"}>Contre offres</MenuItem>
               </Select>
             </FormControl>
 
@@ -189,6 +198,7 @@ const Negotiations = () => {
                 <NegotiationCard
                   key={nego.id || `${nego.room?.id}-${nego.status}`} // Clé fallback unique
                   negotiation={nego}
+                  onUpdate={updateNego}
                 />
               ))
             ) : (
