@@ -48,6 +48,30 @@ class UserFixtures extends Fixture
             ],
         ];
 
+        // Liste des images que vous avez fournies
+        $images = [
+            "https://woody.cloudly.space/app/uploads/lourdes/2021/10/thumbs/chambre-hotel-1920x960-crop-1635427113.jpg",
+            "https://st.hzcdn.com/simgs/pictures/chambres/duplex-parisien-master-s-bedroom-sarah-lavoine-studio-d-architecture-d-interieur-img~ec41b5b603b67463_14-2471-1-17bed26.jpg",
+            "https://www.hotelarmoniparis.com/_novaimg/galleria/1535876.jpg",
+            "https://media.tarkett-image.com/small/IN_401_Hospitality_Luxury_Bedrooms_001.jpg",
+            "https://www.shutterstock.com/image-photo/interior-hotel-bedroom-600nw-2496648857.jpg",
+            "https://media.istockphoto.com/id/850632872/fr/photo/luxe-de-rendu-3d-et-moderne-salle-de-s%C3%A9jour-avec-canap%C3%A9-en-cuir-de-bonne-conception.jpg?s=612x612&w=0&k=20&c=079TBRikwC-LQZ8ck11hnpdqS53lcEhZMv8Uqjfeizg=",
+            "https://cdn.prod.website-files.com/5faeb38cb5f86ba2c2288cd3/626694f0059766639f128992_deluxe%20king%20room%201.png",
+            "https://poitoux.fr/wp-content/uploads/2020/01/Como_VF_2-dernier-web.jpg",
+            "https://d1vp8nomjxwyf1.cloudfront.net/wp-content/uploads/sites/365/2021/03/24163452/ChambreAmourSup%C3%A9rieure-bleue-rose-%40pionphotographie-3.jpg",
+            "https://www.yonder.fr/sites/default/files/styles/lg-insert/public/contenu/destinations/5%20Codet%20chambre%20%C2%A9%20Antoine%20Schramm_0.jpg?itok=jv3m9LdX",
+            "https://www.hotelbdesign.fr/wp-content/uploads/2017/12/suite-design-2.jpg",
+            "https://www.hotelparisjadore.com/blog/wp-content/uploads/2021/07/pja-770x539.jpg",
+            "https://media.istockphoto.com/id/1478976422/fr/vid%C3%A9o/int%C3%A9rieur-3d-de-chambre-sombre-murs-noirs-chambre-de-luxe-appartement-h%C3%B4tel-id%C3%A9e-de-design.jpg?s=640x640&k=20&c=65GdyPMptKGipInxD3AwU4IfgRxMSvJ_unaJASEVRXY=",
+            "https://img-3.journaldesfemmes.fr/IrSleL1PB7xYFmRC6puNhB2Uzow=/1080x/smart/c060716785454fcc8215a9ac45d33733/ccmcms-jdf/37165266.jpg",
+            "https://www.hotelfloridaparis.com/_novaimg/5275804-1541718_0_0_4800_3200_1200_800.jpg",
+            "https://www.yonder.fr/sites/default/files/styles/lg-insert/public/contenu/destinations/small%20LES-BORDS-DE-MER_MARSEILLE-07269.jpg?itok=jPNZDhBl",
+            "https://www.hotel-negresco-nice.com/sites/default/files/styles/750x500/public/2021-02/Le%20Negresco_Deluxe%20vue%20mer%20-%20ch218_%28c%29Anthony%20Lanneretonne_096_BD.jpg?h=98f4cc9f&itok=vjrDXvTP",
+            "https://www.maybourneriviera.com/globalassets/riviera/room-page-listing-imagery/1.-new-rooms-2023/grand-sea-view-studio/french/fr-grand-sea-view-studio-hero-2-1920_1080.jpg",
+            "https://cf.bstatic.com/xdata/images/hotel/max1024x768/595898487.jpg?k=80c0f48b0b89978578036139251cc214c218c33c3486f01d877de6da352a7c35&o=&hp=1",
+            "https://resize.elle.fr/article/var/plain_site/storage/images/deco/reportages/city-guide/les-plus-belles-chambres-avec-vue-au-monde/ocean-suite-the-setai-miami-beach-vue-plage-de-south-beach-et-ocean-atlantique-miami/90693010-1-fre-FR/Ocean-Suite-The-Setai-Miami-Beach-vue-plage-de-South-Beach-et-ocean-Atlantique-Miami.jpg"
+        ];
+
         $badges = [
             [
                 'name' => 'Première Négociation',
@@ -163,13 +187,14 @@ class UserFixtures extends Fixture
 
         // Création des chambres et associer des caractéristiques et des hôtels
         $rooms = [];
+        $imageIndex = 0;
         for ($i = 0; $i < 4; $i++) { // Pour chaque hôtel
             for ($j = 1; $j <= 5; $j++) { // Créer 5 chambres par hôtel
                 $room = new Room();
                 $room->setName("Chambre $j");
                 $room->setDescription("Description de la chambre $j à " . $allHotels[$i]->getName());
                 $room->setPrice(100 + $j * 10); // Prix variable
-                $room->setFolderImage("image$j.jpg");
+                $room->setFolderImage($images[$imageIndex]);
                 $room->setCapacity(2 + $j % 2); // Capacité variable
                 $room->setAcceptanceThreshold(80);
                 $room->setRefusalThreshold(50);
@@ -186,6 +211,9 @@ class UserFixtures extends Fixture
                 } else {
                     $room->addFeature($features[$randomFeatures]);
                 }
+
+                // Incrémenter l'index pour l'image
+                $imageIndex++;
 
                 $manager->persist($room);
                 $rooms[] = $room;

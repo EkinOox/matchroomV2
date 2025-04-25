@@ -29,7 +29,7 @@ class Room
     #[ORM\JoinColumn(nullable: false)]
     private ?Hotel $hotel = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(type: "text", nullable: true)]
     private ?string $folderImage = null;
 
     #[ORM\Column]
