@@ -8,7 +8,7 @@ use App\Dto\Negociation\NegociationOutput;
 use App\State\RoomNegociation\NegociationCollectionProvider;
 
 #[ApiResource(
-    shortName: 'list_negociations',
+    shortName: 'Negociation',
     operations: [
         new GetCollection(
             uriTemplate: '/my/negociations',
