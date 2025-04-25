@@ -17,7 +17,6 @@ const iconMap = {
 };
 
 const RoomModal = ({ isOpen, onClose, data }) => {
-  console.log("RoomModal data:", data);
 
   return (
     <Modal 

@@ -26,6 +26,8 @@
     "cobe": "^0.6.3",
     "dayjs": "^1.11.13",
     "framer-motion": "^12.8.0",
+    "lodash.clonedeep": "^4.5.0",
+    "lodash.isequal": "^4.5.0",
     "lucide-react": "^0.503.0",
     "motion": "^12.9.1",
     "postcss": "^8.5.3",

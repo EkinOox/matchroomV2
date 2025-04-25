@@ -1,18 +1,40 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Modal, Box } from "@mui/material";
-import { useNavigate } from "react-router-dom";
 import confetti from "canvas-confetti";
 
 
-const NegociationModal = ({ isOpen, onClose, data }) => {
+const NegociationModal = ({ isOpen, onClose, data, searchData }) => {
   const [offer, setOffer] = useState(null);
-  const navigate = useNavigate();
 
-  function handleSubmit(e) {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!offer || offer.trim() === "") {
       alert("Veuillez entrer une offre valide.");
       return;
+    }
+
+    const token = localStorage.getItem("token");
+    const offerNumber = Number(offer);
+
+    const response = await fetch("http://localhost:8000/api/negociations", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        room: String(data.id),
+        proposedPrice: offerNumber,
+        startDate: searchData.dateDebut,
+        endDate: searchData.dateFin
+      }),
+    });
+
+    const responseData = await response.json();
+    console.log(responseData);
+
+    if (!response.ok) {
+      throw new Error("Erreur lors de la soumission de l'offre.");
     }
 
     console.log("Offre soumise :", offer);
