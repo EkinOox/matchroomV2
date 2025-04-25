@@ -1,8 +1,16 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 function Navbar() {
   // Vérifier si le token est présent dans le localStorage
   const token = localStorage.getItem('token');
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    if (localStorage.getItem("token")) {
+      localStorage.removeItem("token");
+      navigate("/")
+    }    
+  }
 
   return (
     <nav className="flex items-center justify-between px-8 py-4 bg-white shadow-md">
@@ -28,13 +36,17 @@ function Navbar() {
         </Link>
 
         {/* Afficher le lien Login uniquement si le token est absent */}
-        {!token && (
+        {!token ? (
           <Link
             to="/login"
             className="text-black hover:text-blue-main transition-colors duration-200"
           >
             Connexion
           </Link>
+        ) : (
+          <button onClick={handleLogout} className="text-black hover:text-blue-main transition-colors duration-200">
+            Deconnexion
+          </button>
         )}
       </div>
     </nav>

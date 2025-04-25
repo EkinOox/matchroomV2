@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { AnimatedGridPattern } from "@/components/magicui/animated-grid-pattern";
+import { InteractiveHoverButton } from "@/components/magicui/interactive-hover-button";
+
 
 export default function Login({ onLoginSuccess }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-   const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -30,38 +33,39 @@ export default function Login({ onLoginSuccess }) {
       navigate("/match");
     } catch (err) {
       console.error("Erreur de connexion :", err);
-      setError("Identifiants incorrects. Veuillez r�essayer.");
+      setError("Identifiants incorrects. Veuillez r�essayer.");
     }
   };
 
   return (
-    <div className="w-full max-w-md mx-auto mt-10 p-6 border rounded-lg shadow">
-      <h2 className="text-2xl font-bold mb-4">Connexion</h2>
-      <form onSubmit={handleLogin} className="flex flex-col gap-4">
-        <input
-          type="email"
-          placeholder="Email"
-          className="px-4 py-2 border rounded-lg"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Mot de passe"
-          className="px-4 py-2 border rounded-lg"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        {error && <div className="text-red-500 text-sm">{error}</div>}
-        <button
-          type="submit"
-          className="bg-blue-main text-white py-2 rounded-lg hover:bg-blue-900 transition"
-        >
-          Se connecter
-        </button>
-      </form>
+    <div className="w-full relative h-screen overflow-hidden flex flex-col justify-center items-center">
+      <AnimatedGridPattern />
+      <div className="w-4/12 p-8 bg-white z-50 border rounded-lg shadow">
+        <h2 className="text-4xl font-bold mb-6">Connexion</h2>
+        <span className="font-bold tracking-tight">Veuillez vous authentifier afin d'avoir accès à la recherche d'hotels</span>
+        <form onSubmit={handleLogin} className="flex flex-col mt-6 gap-6">
+          <input
+            type="email"
+            placeholder="Email"
+            className="px-4 py-2 border rounded-lg"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <input
+            type="password"
+            placeholder="Mot de passe"
+            className="px-4 py-2 border rounded-lg"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          {error && <div className="text-red-500 text-sm">{error}</div>}
+          <InteractiveHoverButton type="submit">
+            Se connecter
+          </InteractiveHoverButton>
+        </form>
+      </div>
     </div>
   );
 }
