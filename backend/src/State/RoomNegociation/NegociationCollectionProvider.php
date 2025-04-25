@@ -27,6 +27,8 @@ class NegociationCollectionProvider implements ProviderInterface
             $dto->proposedPrice = $negociation->getProposedPrice();
             $dto->counterOffer = $negociation->getCounterOffer();
             $dto->status = $negociation->getStatus();
+            $dto->startDate = $negociation->getStartDate();
+            $dto->endDate = $negociation->getEndDate();
             $dto->createdAt = $negociation->getCreatedAt();
             $room = $negociation->getRoom();
             $roomDto = new RoomOutput();
