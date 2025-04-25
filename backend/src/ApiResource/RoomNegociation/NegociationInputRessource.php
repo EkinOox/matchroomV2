@@ -10,7 +10,7 @@ use App\Entity\Negociation;
 use App\State\RoomNegociation\NegociationCreateProcessor ;
 
 #[ApiResource(
-    shortName: 'add_Negociation',
+    shortName: 'Negociation',
     stateOptions: new Options(
         entityClass: Negociation::class,
     ),

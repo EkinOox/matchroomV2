@@ -10,10 +10,19 @@ class NegociationInput
 {
     #[Assert\NotNull]
     #[Groups(['negociation:write'])]
-    public ?string $room = null; // IRI du Room (ex: /api/rooms/1)
+    public ?string $room = null;
 
     #[Assert\NotNull]
     #[Assert\Positive]
     #[Groups(['negociation:write'])]
     public ?float $proposedPrice = null;
+
+    #[Assert\Type(\DateTimeInterface::class)]
+    #[Groups(['negociation:write'])]
+    public ?\DateTimeInterface $startDate = null;
+
+    #[Assert\Type(\DateTimeInterface::class)]
+    #[Groups(['negociation:write'])]
+    public ?\DateTimeInterface $endDate = null;
 }
+
