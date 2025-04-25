@@ -38,14 +38,13 @@ export default function Home() {
       latitude: coords.lat.toString(),
       NbVoyageur: parseInt(formData.travelers, 10),
       critere: formData.criteria,
-      roomInfo: formData.result
+      roomInfo: formData.result,
     };
 
     setSearchData(fullSearchData);
     setSearchDone(true);
-    
   }, [formData]);
-  
+
   useEffect(() => {
     if (searchData) {
       console.log("🔍 searchData mis à jour :", searchData);
@@ -57,24 +56,28 @@ export default function Home() {
       <Navbar />
 
       <div className="flex flex-col lg:flex-row gap-6 px-6 py-8 max-w-7xl mx-auto">
-        <div className="flex-1 flex-col z-10 flex items-center justify-center">
-          {searchDone ? (
-            <>
-              <Card
-                onSwipe={(hotel) => setSelectedHotel(hotel)}
-                searchData={searchData}
-              />
-              <Map origin={userCoords} destination={hotelCoords} />
-            </>
-          ) : (
-            <div className="relative w-full h-[85vh] max-w-md mx-auto flex items-center justify-center overflow-hidden">
-              <Globe />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#F8F8F8] to-transparent opacity-50" />
-              <h1 className="text-2xl font-bold text-center text-gray-800 z-20">
-                Matchez avec votre prochaine destination grâce à MatchRoom !
-              </h1>
-            </div>
-          )}
+        <div className="flex flex-col lg:flex-row gap-6 px-6 py-8 max-w-7xl mx-auto">
+          <div className="flex-1 flex-col z-10 flex items-center justify-center">
+            {searchDone ? (
+              <>
+                <Card
+                  onSwipe={(hotel) => setSelectedHotel(hotel)}
+                  searchData={searchData}
+                />
+                <Map origin={userCoords} destination={hotelCoords} />
+              </>
+            ) : (
+              <div className="relative w-full h-[100vh] max-w-md mx-auto flex items-center justify-center overflow-hidden">
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <Globe />
+                </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-[#F8F8F8] to-transparent opacity-50" />
+                <h1 className="text-2xl font-bold text-center text-gray-800 z-20">
+                  Matchez avec votre prochaine destination grâce à MatchRoom !
+                </h1>
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="flex-1 space-y-6">
