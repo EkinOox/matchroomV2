@@ -10,7 +10,7 @@ use App\Repository\NegociationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class NegociationUpdateStatuProvider implements ProcessorInterface
+class NegociationUpdateStatusProvider implements ProcessorInterface
 {
     public function __construct(
         private NegociationRepository $repository,
@@ -27,7 +27,13 @@ class NegociationUpdateStatuProvider implements ProcessorInterface
         }
 
         /** @var NegociationUpdateStatusDTO $data */
-        $negociation->setStatus($data->status);
+        if ($data->counterOffer) {
+            $negociation->setCounterOffer($data->counterOffer);
+        }
+
+        if ($data->status) {
+            $negociation->setStatus($data->status);
+        }
 
         $this->em->flush();
 
