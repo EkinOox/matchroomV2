@@ -24,11 +24,11 @@ export default function Card({ onSwipe, searchData }) {
     setCards(formatted);
   }, [searchData]);
 
-  useEffect(() => {
-    if (cards.length > 0 && onSwipe) {
-      onSwipe(cards[0]);
-    }
-  }, [cards, onSwipe]);
+  // useEffect(() => {
+  //   if (cards.length > 0 && onSwipe) {
+  //     onSwipe(cards[0]);
+  //   }
+  // }, [cards, onSwipe]);
 
   const handleSwipe = (direction) => {
     if (!cards.length || isAnimating) return;
@@ -36,14 +36,17 @@ export default function Card({ onSwipe, searchData }) {
     setSwipeDirection(direction);
     setIsAnimating(true);
 
-    if (onSwipe) onSwipe(cards[0]);
+    if (direction) {
+      onSwipe(cards[0]);
+    }
 
     setTimeout(() => {
-      setCards(prev => prev.slice(1));
+      setCards((prev) => prev.slice(1));
       setSwipeDirection(null);
       setIsAnimating(false);
     }, 300);
-  };
+};
+
 
   return (
     <div className="relative w-[50vh] h-[50vh] max-w-md mx-auto flex items-center justify-center overflow-hidden">
@@ -116,7 +119,7 @@ export default function Card({ onSwipe, searchData }) {
 
       {cards.length === 0 && (
         <div className="absolute text-center text-gray-600">
-          Aucun autre bien à afficher 👋
+          Aucun autre bien à afficher 🫢
         </div>
       )}
     </div>
