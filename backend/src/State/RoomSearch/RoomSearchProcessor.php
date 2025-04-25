@@ -32,6 +32,8 @@ final class RoomSearchProcessor implements ProcessorInterface
         $latitude = $data->latitude;
         $NbVoyageur = $data->NbVoyageur;
         $critere = $data->critere;
+        $dateDebut = $data->dateDebut;
+        $dateFin = $data->dateFin;
 
         // Vérifier que les coordonnées sont fournies
         if (!$longitude || !$latitude) {
@@ -45,7 +47,9 @@ final class RoomSearchProcessor implements ProcessorInterface
         $queryBuilder = $this->roomRepository->searchRooms(
             $hotelsInRadius,
             $NbVoyageur,
-            $critere
+            $critere,
+            $dateDebut,
+            $dateFin
         );
 
         $query = $queryBuilder->getQuery();

@@ -55,6 +55,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $negociations;
 
     /**
+     * @var Collection<int, Reservation>
+     */
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Reservation::class)]
+    private Collection $reservations;
+
+    /**
      * @var Collection<int, Badge>
      */
     #[ORM\ManyToMany(targetEntity: Badge::class, inversedBy: 'users')]
@@ -68,6 +74,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->badges = new ArrayCollection();
         $this->negociations = new ArrayCollection();
+        $this->reservations = new ArrayCollection();
     }
 
     public function getId(): ?Uuid
@@ -199,6 +206,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // Doctrine supprimera la négociation de la base quand elle est retirée de la collection
         }
         return $this;
+    }
+
+    public function getReservations(): Collection
+    {
+        return $this->reservations;
     }
 
     /**

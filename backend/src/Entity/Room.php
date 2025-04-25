@@ -35,8 +35,11 @@ class Room
     #[ORM\Column]
     private ?int $capacity = null;
 
-    // #[ORM\OneToOne(mappedBy: 'room', cascade: ['persist', 'remove'])]
-    // private ?Reservation $reservation = null;
+    /**
+     * @var Collection<int, Reservation>
+     */
+    #[ORM\OneToMany(mappedBy: 'room', targetEntity: Reservation::class)]
+    private Collection $reservations;
 
     /**
      * @var Collection<int, Negociation>
@@ -67,6 +70,7 @@ class Room
         $this->negociations = new ArrayCollection();
         $this->features = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
+        $this->reservations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -146,10 +150,10 @@ class Room
         return $this;
     }
 
-    // public function getReservation(): ?Reservation
-    // {
-    //     return $this->reservation;
-    // }
+    public function getReservations(): Collection
+    {
+        return $this->reservations;
+    }
 
     // public function setReservation(Reservation $reservation): static
     // {

@@ -16,5 +16,11 @@ final class RoomSearchCreateDTO
     public ?int $NbVoyageur = null;
 
     #[Groups(['create:room_search'])]
+    public ?\DateTimeImmutable $dateDebut = null;
+
+    #[Groups(['create:room_search'])]
+    public ?\DateTimeImmutable $dateFin = null;
+
+    #[Groups(['create:room_search'])]
     public array $critere = [];
 }
