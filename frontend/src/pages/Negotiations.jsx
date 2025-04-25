@@ -84,7 +84,7 @@ const Negotiations = () => {
     {
       id: 13,
       proposedPrice: 270,
-      status: "rejected",
+      status: "refused",
       createdAt: "2025-04-25T09:52:28+00:00",
       room: {
         id: 13,
@@ -95,12 +95,13 @@ const Negotiations = () => {
         capacity: 3
       },
       startDate: "2025-04-25T00:00:00+00:00",
-      endDate: "2025-04-30T00:00:00+00:00"
+      endDate: "2025-04-28T00:00:00+00:00"
     }
   ];
 
   useEffect(() => {
     const token = localStorage.getItem("token");
+
     if (!token) {
       navigate("/login");
       return;
@@ -172,12 +173,12 @@ const Negotiations = () => {
               <DatePicker
                 label="Début du séjour"
                 value={startDate}
-                onChange={(newValue) => setStartDate(newValue ? newValue.toDate() : null)}
+                onChange={setStartDate}
               />
               <DatePicker
                 label="Fin du séjour"
                 value={endDate}
-                onChange={(newValue) => setEndDate(newValue ? newValue.toDate() : null)}
+                onChange={setEndDate}
               />
             </LocalizationProvider>
           </Box>
