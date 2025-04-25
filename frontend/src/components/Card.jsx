@@ -18,7 +18,7 @@ export default function Card({ onSwipe, searchData, onNoHotels }) {
     const formatted = searchData.roomInfo.map((room) => ({
       ...room,
       price: room.price || "Prix non disponible",
-      imageUrl: room.imageUrl || "https://media.istockphoto.com/id/104731717/fr/photo/centre-de-vill%C3%A9giature-de-luxe.jpg?s=612x612&w=0&k=20&c=qn-Ugr3N5J_JBKZttni3vimlfBOd52jWG3FouENXye0=",
+      imageUrl: room.folderImage || "https://media.istockphoto.com/id/104731717/fr/photo/centre-de-vill%C3%A9giature-de-luxe.jpg?s=612x612&w=0&k=20&c=qn-Ugr3N5J_JBKZttni3vimlfBOd52jWG3FouENXye0=",
     }));
 
     setCards(formatted);
