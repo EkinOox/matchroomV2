@@ -7,7 +7,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
 final class RoomNegociationReadDTO
 {
     #[Groups(['read:room_negotiation'])]
-    public ?int $id = null;
+    public ?int $idNegociation = null;
+
+    #[Groups(['read:room_negotiation'])]
+    public ?int $idRoom = null;
 
     #[Groups(['read:room_negotiation'])]
     public ?string $name = null;

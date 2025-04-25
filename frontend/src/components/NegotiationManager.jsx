@@ -4,7 +4,6 @@ const NegotiationManager = () => {
   const [negos, setNegotiatedRooms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [counterOffers, setCounterOffers] = useState({});
-
   const token = localStorage.getItem('token');
 
   const fetchNegotiations = () => {
@@ -20,7 +19,8 @@ const NegotiationManager = () => {
         return res.json();
       })
       .then((data) => {
-        setNegotiatedRooms(data);
+        const array = Array.isArray(data) ? data : data.member;
+        setNegotiatedRooms(array || []);
       })
       .catch((err) => {
         console.error('Erreur hôtelier négo :', err);
@@ -34,54 +34,51 @@ const NegotiationManager = () => {
     fetchNegotiations();
   }, []);
 
-  const handleCounterOfferChange = (roomId, value) => {
-    setCounterOffers({ ...counterOffers, [roomId]: value });
+  const handleCounterOfferChange = (idNegociation, value) => {
+    setCounterOffers({ ...counterOffers, [idNegociation]: value });
   };
 
-  const handleSendCounterOffer = async (roomId) => {
-    const price = counterOffers[roomId];
-    if (!price || isNaN(price)) {
-      alert('Veuillez entrer une contre-offre valide.');
+  const updateStatus = async (idNegociation, patchData, successMessage) => {
+    try {
+      const res = await fetch(`http://localhost:8000/api/negociations/${idNegociation}/update_status`, {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/ld+json',
+          'Content-Type': 'application/merge-patch+json',
+        },
+        body: JSON.stringify(patchData),
+      });
+
+      if (!res.ok) throw new Error("Erreur lors de la mise à jour");
+      alert(successMessage);
+      fetchNegotiations();
+    } catch (error) {
+      console.error("Erreur mise à jour :", error);
+    }
+  };
+
+  const handleSendCounterOffer = (idNegociation) => {
+    const value = counterOffers[idNegociation];
+    if (!value || isNaN(value)) {
+      alert("Veuillez entrer une contre-offre valide.");
       return;
     }
 
-    try {
-      const res = await fetch(`http://localhost:8000/api/negociations/${roomId}`, {
-        method: 'PATCH',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: 'application/ld+json',
-          'Content-Type': 'application/merge-patch+json',
-        },
-        body: JSON.stringify({ counterOffer: Number(price) }),
-      });
-
-      if (!res.ok) throw new Error("Erreur lors de l'envoi de la contre-offre");
-      alert('Contre-offre envoyée avec succès !');
-      fetchNegotiations(); // refresh data
-    } catch (error) {
-      console.error('Erreur envoi contre-offre :', error);
-    }
+    updateStatus(
+      idNegociation,
+      { counterOffer: Number(value), status: 'counter' },
+      'Contre-offre envoyée avec succès !'
+    );
   };
 
-  const handleStatusUpdate = async (roomId, status) => {
-    try {
-      const res = await fetch(`http://localhost:8000/api/negociations/${roomId}`, {
-        method: 'PATCH',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: 'application/ld+json',
-          'Content-Type': 'application/merge-patch+json',
-        },
-        body: JSON.stringify({ status }),
-      });
+  const handleStatusUpdate = (idNegociation, status) => {
+    const messages = {
+      accepted: "Offre acceptée !",
+      refused: "Offre refusée.",
+    };
 
-      if (!res.ok) throw new Error("Erreur lors du changement de statut");
-      alert(`Offre ${status === 'accepted' ? 'acceptée' : 'refusée'} !`);
-      fetchNegotiations();
-    } catch (error) {
-      console.error("Erreur changement de statut :", error);
-    }
+    updateStatus(idNegociation, { status }, messages[status]);
   };
 
   return (
@@ -91,49 +88,49 @@ const NegotiationManager = () => {
       {loading ? (
         <p className="text-gray-500">Chargement...</p>
       ) : negos.length === 0 ? (
-        <p className="text-gray-500">Aucune négociation en cours.</p>
+        <p className="text-gray-500">Aucune négociation en attente.</p>
       ) : (
         <div className="grid gap-6">
-          {negos.map((room) => (
+          {negos.map((negotiation) => (
             <div
-              key={room.id}
+              key={negotiation.idNegociation}
               className="bg-white border border-gray-200 shadow-md rounded-xl p-6 transition hover:shadow-lg"
             >
               <div className="flex flex-col gap-4">
                 <div>
-                  <h3 className="text-xl font-semibold text-neutral-900">{room.name}</h3>
-                  <p className="text-gray-600 mb-2">{room.description}</p>
+                  <h3 className="text-xl font-semibold text-neutral-900">{negotiation.name}</h3>
+                  <p className="text-gray-600 mb-2">{negotiation.description}</p>
                   <ul className="text-sm text-gray-700 space-y-1">
-                    <li>💶 Prix de base : <strong>{room.price} €</strong></li>
-                    <li>🤝 Prix proposé : <strong>{room.proposedPrice} €</strong></li>
-                    <li>📊 Contre-offre actuelle : <strong>{room.counterOffer ?? 'Aucune'}</strong></li>
-                    <li>📌 Statut : <span className="capitalize">{room.status}</span></li>
-                    <li>🕒 Réponse attendue : {new Date(room.responseTime).toLocaleString()}</li>
+                    <li>💶 Prix de base : <strong>{negotiation.price} €</strong></li>
+                    <li>🤝 Prix proposé : <strong>{negotiation.proposedPrice} €</strong></li>
+                    <li>📊 Contre-offre actuelle : <strong>{negotiation.counterOffer ?? 'Aucune'}</strong></li>
+                    <li>📌 Statut : <span className="capitalize">{negotiation.status}</span></li>
+                    <li>🕒 Réponse attendue : {negotiation.responseTime ? new Date(negotiation.responseTime).toLocaleString() : 'Non spécifiée'}</li>
                   </ul>
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
                   <input
                     type="number"
-                    value={counterOffers[room.id] || ''}
-                    onChange={(e) => handleCounterOfferChange(room.id, e.target.value)}
+                    value={counterOffers[negotiation.idNegociation] || ''}
+                    onChange={(e) => handleCounterOfferChange(negotiation.idNegociation, e.target.value)}
                     placeholder="Contre-offre (€)"
-                    className="w-full sm:w-1/3 px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-600"
+                    className="w-full sm:w-1/3 px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-neutral-800"
                   />
                   <button
-                    onClick={() => handleSendCounterOffer(room.id)}
-                    className="bg-blue-700 text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition"
+                    onClick={() => handleSendCounterOffer(negotiation.idNegociation)}
+                    className="bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-900 transition"
                   >
                     Envoyer
                   </button>
                   <button
-                    onClick={() => handleStatusUpdate(room.id, 'accepted')}
+                    onClick={() => handleStatusUpdate(negotiation.idNegociation, 'accepted')}
                     className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition"
                   >
                     Accepter
                   </button>
                   <button
-                    onClick={() => handleStatusUpdate(room.id, 'refused')}
+                    onClick={() => handleStatusUpdate(negotiation.idNegociation, 'refused')}
                     className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition"
                   >
                     Refuser

@@ -69,7 +69,8 @@ final class RoomNegociationCollectionProvider implements ProviderInterface
     private function mapToDto(Negociation $negociation): RoomNegociationReadDTO
     {
         $dto = new RoomNegociationReadDTO();
-        $dto->id = $negociation->getRoom()->getId();
+        $dto->idNegociation = $negociation->getId();
+        $dto->idRoom = $negociation->getRoom()->getId();
         $dto->name = $negociation->getRoom()->getName();
         $dto->description = $negociation->getRoom()->getDescription();
         $dto->price = $negociation->getRoom()->getPrice();

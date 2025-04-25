@@ -1,18 +1,40 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Modal, Box } from "@mui/material";
-import { useNavigate } from "react-router-dom";
 import confetti from "canvas-confetti";
 
 
-const NegociationModal = ({ isOpen, onClose, data }) => {
+const NegociationModal = ({ isOpen, onClose, data, searchData }) => {
   const [offer, setOffer] = useState(null);
-  const navigate = useNavigate();
 
-  function handleSubmit(e) {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!offer || offer.trim() === "") {
       alert("Veuillez entrer une offre valide.");
       return;
+    }
+
+    const token = localStorage.getItem("token");
+    const offerNumber = Number(offer);
+
+    const response = await fetch("http://localhost:8000/api/negociations", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        room: String(data.id),
+        proposedPrice: offerNumber,
+        startDate: searchData.dateDebut,
+        endDate: searchData.dateFin
+      }),
+    });
+
+    const responseData = await response.json();
+    console.log(responseData);
+
+    if (!response.ok) {
+      throw new Error("Erreur lors de la soumission de l'offre.");
     }
 
     console.log("Offre soumise :", offer);
@@ -34,14 +56,16 @@ const NegociationModal = ({ isOpen, onClose, data }) => {
       open={isOpen}
       onClose={onClose}
       sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
         backgroundColor: "rgba(0, 0, 0, 0.5)",
         backdropFilter: "blur(5px)",
       }}
     >
       <Box
-        className="absolute top-1/2 left-1/2 bg-white rounded-lg shadow-xl flex p-6 gap-6 flex-col md:flex-row"
-        style={{
-          transform: "translate(-50%, -50%)",
+        className="absolute bg-white rounded-lg shadow-xl flex p-6 gap-6 flex-col md:flex-row"
+        sx={{
           width: "50%",
           height: "50vh",
           overflowY: "auto",

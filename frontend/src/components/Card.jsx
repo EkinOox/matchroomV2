@@ -5,7 +5,7 @@ import NegociationModal from "./NegociationModal";
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import CloseIcon from '@mui/icons-material/Close';
 
-export default function Card({ onSwipe, searchData }) {
+export default function Card({ onSwipe, searchData, onNoHotels }) {
   const [cards, setCards] = useState([]);
   const [swipeDirection, setSwipeDirection] = useState(null);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -29,6 +29,14 @@ export default function Card({ onSwipe, searchData }) {
       onSwipe(cards[0]);
     }
   }, [cards, onSwipe]);
+  
+  useEffect(() => {
+    if (cards.length === 0 && onNoHotels) {
+      onNoHotels(true);
+    } else if (cards.length > 0 && onNoHotels) {
+      onNoHotels(false);
+    }
+  }, [cards, onNoHotels]);
 
   const handleSwipe = (direction) => {
     if (!cards.length || isAnimating) return;
@@ -36,10 +44,12 @@ export default function Card({ onSwipe, searchData }) {
     setSwipeDirection(direction);
     setIsAnimating(true);
 
-    if (onSwipe) onSwipe(cards[0]);
+    if (direction) {
+      onSwipe(cards[0]);
+    }
 
     setTimeout(() => {
-      setCards(prev => prev.slice(1));
+      setCards((prev) => prev.slice(1));
       setSwipeDirection(null);
       setIsAnimating(false);
     }, 300);
@@ -89,6 +99,7 @@ export default function Card({ onSwipe, searchData }) {
                 isOpen={isNegotiationModalOpen}
                 onClose={() => setIsNegotiationModalOpen(false)}
                 data={hotel}
+                searchData={searchData}
               />
 
               <div className="flex justify-center gap-6 w-full absolute z-20 bottom-[120px]">
@@ -116,7 +127,7 @@ export default function Card({ onSwipe, searchData }) {
 
       {cards.length === 0 && (
         <div className="absolute text-center text-gray-600">
-          Aucun autre bien à afficher 👋
+          Aucun autre bien à afficher 🫢
         </div>
       )}
     </div>
