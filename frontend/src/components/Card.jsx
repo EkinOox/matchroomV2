@@ -99,6 +99,7 @@ export default function Card({ onSwipe, searchData, onNoHotels }) {
                 isOpen={isNegotiationModalOpen}
                 onClose={() => setIsNegotiationModalOpen(false)}
                 data={hotel}
+                searchData={searchData}
               />
 
               <div className="flex justify-center gap-6 w-full absolute z-20 bottom-[120px]">
