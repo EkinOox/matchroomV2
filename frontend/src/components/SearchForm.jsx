@@ -1,12 +1,24 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"; // Import de useNavigate
 import Filters from "./Filters";
 
 export default function SearchForm({ onSearch }) {
   const [input, setInput] = useState("");
   const [travelers, setTravelers] = useState("");
+  const [startDate, setStartDate] = useState(""); // Date de début
+  const [endDate, setEndDate] = useState(""); // Date de fin
   const [selectedCriteria, setSelectedCriteria] = useState([]);
   const [error, setError] = useState("");
   const [result, setResult] = useState(null);
+  const navigate = useNavigate(); // Hook pour la redirection
+
+  // Vérifier le token dès que le composant est monté
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login"); // Redirection vers la page de login si aucun token
+    }
+  }, [navigate]); // Exécuter uniquement lors du montage du composant
 
   const handleToggleCriterion = (criterion) => {
     setSelectedCriteria((prev) =>
@@ -37,12 +49,38 @@ export default function SearchForm({ onSearch }) {
     };
   };
 
+  // Fonction de validation des dates
+  const validateDates = () => {
+    const today = new Date().toISOString().split("T")[0];
+    if (startDate && startDate < today) {
+      setError("La date de début ne peut pas être antérieure à aujourd'hui.");
+      return false;
+    }
+    if (endDate && startDate >= endDate) {
+      setError("La date de début doit précéder la date de fin.");
+      return false;
+    }
+    setError("");
+    return true;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (input.trim() !== "" && travelers > 0 && selectedCriteria.length > 0) {
+    // Vérification du token (avant de procéder à la recherche)
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login"); // Redirection vers la page de login si aucun token
+      return;
+    }
+
+    if (
+      input.trim() !== "" &&
+      travelers > 0 &&
+      selectedCriteria.length > 0 &&
+      validateDates()
+    ) {
       try {
-        const token = localStorage.getItem("token");
         const { latitude, longitude } = await fetchCoordinates(input);
 
         console.log("Coordonnées récupérées :", result);
@@ -81,7 +119,9 @@ export default function SearchForm({ onSearch }) {
         setError(err.message);
       }
     } else {
-      setError("Tous les champs doivent être remplis.");
+      setError(
+        "Tous les champs doivent être remplis et les dates doivent être valides."
+      );
     }
   };
 
@@ -115,7 +155,28 @@ export default function SearchForm({ onSearch }) {
         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-main"
         required
       />
-
+      <div className="flex gap-4">
+        <div className="flex-col w-full">
+          <label>Date de début :</label>
+          <input
+            type="date"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-main"
+            required
+          />
+        </div>
+        <div className="flex-col w-full">
+          <label>Date de fin :</label>
+          <input
+            type="date"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-main"
+            required
+          />
+        </div>
+      </div>
       {error && <div className="text-red-600 text-sm mt-2">{error}</div>}
 
       <Filters

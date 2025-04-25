@@ -1,6 +1,9 @@
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom';
 
 function Navbar() {
+  // Vérifier si le token est présent dans le localStorage
+  const token = localStorage.getItem('token');
+
   return (
     <nav className="flex items-center justify-between px-8 py-4 bg-white shadow-md">
       <h1 className="text-2xl font-bold text-black">Matchroom</h1>
@@ -23,15 +26,19 @@ function Navbar() {
         >
           Vos Négociations
         </Link>
-        <Link
-          to="/login"
-          className="text-black hover:text-blue-main transition-colors duration-200"
-        >
-          Login
-        </Link>
+
+        {/* Afficher le lien Login uniquement si le token est absent */}
+        {!token && (
+          <Link
+            to="/login"
+            className="text-black hover:text-blue-main transition-colors duration-200"
+          >
+            Connexion
+          </Link>
+        )}
       </div>
     </nav>
-  )
+  );
 }
 
-export default Navbar
+export default Navbar;
