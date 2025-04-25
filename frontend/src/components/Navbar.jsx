@@ -1,35 +1,41 @@
-import { Modal, Menu, MenuItem } from '@mui/material';
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Modal, Menu, MenuItem } from "@mui/material";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 
-
 function Navbar() {
-  // Vérifier si le token est présent dans le localStorage
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem("token");
   const navigate = useNavigate();
   const [isLogoutOpen, setIsLogoutModalOpen] = useState(false);
-  const [anchorEl, setAnchorEl] = useState(null); // Pour gérer l'ouverture du menu
+  const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
+  // Decode le token uniquement s'il existe
+  let isHotelier = false;
+  if (token) {
+    try {
+      const decoded = jwtDecode(token);
+      isHotelier = decoded?.roles?.includes("ROLE_HOTELIER");
+    } catch (e) {
+      console.error("Token invalide :", e);
+    }
+  }
+
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    const decoded = jwtDecode(token);
-    console.log(decoded);
-    
+    localStorage.removeItem("token");
     setIsLogoutModalOpen(true);
   };
 
   const handleProfileHover = (event) => {
-    setAnchorEl(event.currentTarget); // Ouvre le menu au hover
+    setAnchorEl(event.currentTarget);
   };
 
   const handleCloseMenu = () => {
-    setAnchorEl(null); // Ferme le menu
+    setAnchorEl(null);
   };
 
   return (
-    <nav className="flex items-center justify-between px-8 py-4 bg-white shadow-md">
+    <nav className="flex items-center justify-between px-8 py-4 bg-white shadow-md rounded-lg">
       <h1 className="text-2xl font-bold text-black">Matchroom</h1>
       <div className="space-x-8 text-lg font-medium">
         <Link
@@ -51,7 +57,16 @@ function Navbar() {
           Vos Négociations
         </Link>
 
-        {/* Afficher le lien Login uniquement si le token est absent */}
+        {/* ✅ Lien Administration uniquement pour ROLE_HOTELIER */}
+        {isHotelier && (
+          <Link
+            to="/admin"
+            className="text-black hover:text-blue-main transition-colors duration-200"
+          >
+            Administration
+          </Link>
+        )}
+
         {!token ? (
           <Link
             to="/login"
@@ -60,32 +75,14 @@ function Navbar() {
             Connexion
           </Link>
         ) : (
-          <div
-            onMouseEnter={handleProfileHover} // Ouvre le menu au hover
-            onMouseLeave={handleCloseMenu}     // Ferme le menu au sortir du conteneur
+          <Link
+            onClick={() => {
+              handleLogout();
+              handleCloseMenu();
+            }}
           >
-            <button
-              className="text-black hover:text-blue-main transition-colors duration-200"
-            >
-              Mon Compte
-            </button>
-            <Menu
-              anchorEl={anchorEl}
-              open={open}
-              onClose={handleCloseMenu}
-              MenuListProps={{
-                'aria-labelledby': 'basic-button',
-              }}
-              onMouseLeave={handleCloseMenu} // Ferme le menu au sortir du menu
-            >
-              <MenuItem component={Link} to="/profil" onClick={handleCloseMenu}>
-                Profil
-              </MenuItem>
-              <MenuItem onClick={() => { handleLogout(); handleCloseMenu(); }}>
-                Déconnexion
-              </MenuItem>
-            </Menu>
-          </div>
+            Déconnexion
+          </Link>
         )}
       </div>
 
@@ -93,11 +90,11 @@ function Navbar() {
         open={isLogoutOpen}
         onClose={() => setIsLogoutModalOpen(false)}
         sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          backdropFilter: 'blur(5px)',
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "rgba(0, 0, 0, 0.5)",
+          backdropFilter: "blur(5px)",
         }}
       >
         <div className="bg-white flex flex-col p-16 gap-4 rounded-lg shadow-lg text-center">

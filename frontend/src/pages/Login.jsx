@@ -33,7 +33,7 @@ export default function Login({ onLoginSuccess }) {
       navigate("/match");
     } catch (err) {
       console.error("Erreur de connexion :", err);
-      setError("Identifiants incorrects. Veuillez r�essayer.");
+      setError("Identifiants incorrects. Veuillez réessayer.");
     }
   };
 

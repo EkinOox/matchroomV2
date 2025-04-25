@@ -70,7 +70,7 @@ export default function SearchForm({ onSearch }) {
     // Vérification du token (avant de procéder à la recherche)
     const token = localStorage.getItem("token");
     if (!token) {
-      navigate("/login"); // Redirection vers la page de login si aucun token
+      navigate("/login");
       return;
     }
 
@@ -97,6 +97,8 @@ export default function SearchForm({ onSearch }) {
             latitude: latitude,
             NbVoyageur: parseInt(travelers, 10),
             critere: selectedCriteria,
+            dateDebut: startDate,
+            dateFin: endDate,
           }),
         });
 

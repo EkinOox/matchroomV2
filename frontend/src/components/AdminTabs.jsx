@@ -1,6 +1,6 @@
 const AdminTabs = ({ active, onChange }) => {
     const tabs = [
-      { label: 'CRUD', value: 'crud' },
+      { label: 'Gestion de l\'hôtel', value: 'crud' },
       { label: 'Négociations', value: 'negotiations' },
     ];
   
