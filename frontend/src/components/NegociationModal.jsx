@@ -50,8 +50,10 @@ const NegociationModal = ({ isOpen, onClose, handleSwipe, data, searchData }) =>
     if (handleSwipe) {
       setTimeout(() => {
         handleSwipe("right");
+        if (onClose) {
+          onClose();
+        }
       }, 2000);
-      
     }
   }
 
