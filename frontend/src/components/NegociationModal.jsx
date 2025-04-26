@@ -3,7 +3,7 @@ import { Modal, Box } from "@mui/material";
 import confetti from "canvas-confetti";
 
 
-const NegociationModal = ({ isOpen, onClose, data, searchData }) => {
+const NegociationModal = ({ isOpen, onClose, handleSwipe, data, searchData }) => {
   const [offer, setOffer] = useState(null);
 
   const handleSubmit = async (e) => {
@@ -30,9 +30,6 @@ const NegociationModal = ({ isOpen, onClose, data, searchData }) => {
       }),
     });
 
-    const responseData = await response.json();
-    console.log(responseData);
-
     if (!response.ok) {
       throw new Error("Erreur lors de la soumission de l'offre.");
     }
@@ -49,6 +46,15 @@ const NegociationModal = ({ isOpen, onClose, data, searchData }) => {
       spread: 170,
       origin: { y: 0.6 },
     });
+
+    if (handleSwipe) {
+      setTimeout(() => {
+        handleSwipe("right");
+        if (onClose) {
+          onClose();
+        }
+      }, 2000);
+    }
   }
 
   return (
